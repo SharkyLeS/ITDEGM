@@ -76,6 +76,8 @@ public class TSPSolver {
 		long spentTime = 0;
 		do
 		{
+			//Stupid Heuristic
+			
 			// TODO
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
