@@ -85,7 +85,6 @@ public class TSPSolver {
 			//Stupid Heuristic
 			m_solution.setCityPosition(idCity, i);
 			this.removeDisponibleCity(idRestants, idCity);
-			System.err.println(idRestants);
 			idCity=this.CherchePlusProche(idCity, idRestants);
 			i++;
 			// TODO
