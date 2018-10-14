@@ -79,7 +79,7 @@ public class TSPSolver {
 		int i=1;
 		ArrayList<Integer> idRestants = new ArrayList<Integer>(); //Erreurs dans les index dans instances ? on ne peut pas considérer la dernière ville
 		idRestants=this.initialiseID(idRestants);
-		int idCity=this.CherchePlusProche(1, idRestants);
+		int idCity=this.CherchePlusProche(0, idRestants);
 		do
 		{
 			//Stupid Heuristic
@@ -91,8 +91,8 @@ public class TSPSolver {
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
 		}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
-		m_solution.setCityPosition(1, 0);
-		m_solution.setCityPosition(1, m_instance.getNbCities());
+		m_solution.setCityPosition(0, 0);
+		m_solution.setCityPosition(0, m_instance.getNbCities());
 	}
 
 	// -----------------------------
@@ -163,8 +163,8 @@ public class TSPSolver {
 	}
 	
 	public ArrayList<Integer> initialiseID(ArrayList<Integer> idRestants) {
-		//for(int i=0;i<m_instance.getNbCities()-2;i++) {
-		for(int i=2;i<=m_instance.getNbCities();i++) {
+		//for(int i=-1;i<m_instance.getNbCities()-2;i++) {
+		for(int i=1;i<m_instance.getNbCities();i++) {
 			//idRestants.add(i+2);
 			idRestants.add(i);
 		}
