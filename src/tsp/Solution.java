@@ -275,4 +275,5 @@ public class Solution{
 	public String getError() {
 		return m_error;
 	}
+
 }

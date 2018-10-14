@@ -1,5 +1,7 @@
 package tsp;
 
+import java.util.ArrayList;
+
 /**
  * 
  * This class is the place where you should enter your code and from which you can create your own objects.
@@ -74,15 +76,24 @@ public class TSPSolver {
 		// Example of a time loop
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
+		int i=1;
+		ArrayList<Integer> idRestants = new ArrayList<Integer>(); //Erreurs dans les index dans instances ? on ne peut pas considérer la dernière ville
+		idRestants=this.initialiseID(idRestants);
+		int idCity=this.CherchePlusProche(1, idRestants);
 		do
 		{
 			//Stupid Heuristic
-			
+			m_solution.setCityPosition(idCity, i);
+			this.removeDisponibleCity(idRestants, idCity);
+			System.err.println(idRestants);
+			idCity=this.CherchePlusProche(idCity, idRestants);
+			i++;
 			// TODO
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
-		}while(spentTime < (m_timeLimit * 1000 - 100) );
-		
+		}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
+		m_solution.setCityPosition(1, 0);
+		m_solution.setCityPosition(1, m_instance.getNbCities());
 	}
 
 	// -----------------------------
@@ -128,4 +139,50 @@ public class TSPSolver {
 		this.m_timeLimit = time;
 	}
 
+
+
+	// METHODES PERSO
+
+	public int CherchePlusProche(int idCity, ArrayList<Integer> idRestants) throws Exception {
+		if((idCity<0)||(idCity>m_instance.getNbCities()-1)) {
+			throw new Exception("Error : index " + idCity
+					+ " is not valid, it should range between 0 and "
+					+ (m_instance.getNbCities()-1));
+		}
+		else {
+			double dmin=10000000;
+			int idPlusProche=idCity;
+			for(int j:idRestants) {
+				if(m_instance.getDistances(idCity,j)<=dmin) {
+					dmin=m_instance.getDistances(idCity,j);
+					idPlusProche=j;
+				}
+			}
+			return idPlusProche;
+		}
+		
+	}
+	
+	public ArrayList<Integer> initialiseID(ArrayList<Integer> idRestants) {
+		for(int i=0;i<m_instance.getNbCities()-2;i++) {
+			idRestants.add(i+2);
+		}
+		return idRestants;
+	}
+	
+	public void removeDisponibleCity(ArrayList<Integer> idRestants, int idCity) throws Exception{
+		if((idCity<0)||(idCity>m_instance.getNbCities()-1)) {
+			throw new Exception("Error : index " + idCity
+					+ " is not valid, it should range between 0 and "
+					+ (m_instance.getNbCities()-1));
+		}
+		else {
+			for(int i=0;i<idRestants.size();i++) {
+				if(idRestants.get(i)==idCity) {
+					idRestants.remove(i);
+					break;
+				}
+			}
+		}
+	}
 }
