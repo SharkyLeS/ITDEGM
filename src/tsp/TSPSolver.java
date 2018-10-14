@@ -163,8 +163,10 @@ public class TSPSolver {
 	}
 	
 	public ArrayList<Integer> initialiseID(ArrayList<Integer> idRestants) {
-		for(int i=0;i<m_instance.getNbCities()-2;i++) {
-			idRestants.add(i+2);
+		//for(int i=0;i<m_instance.getNbCities()-2;i++) {
+		for(int i=2;i<=m_instance.getNbCities();i++) {
+			//idRestants.add(i+2);
+			idRestants.add(i);
 		}
 		return idRestants;
 	}
