@@ -87,7 +87,6 @@ public class TSPSolver {
 			this.removeDisponibleCity(idRestants, idCity);
 			idCity=this.CherchePlusProche(idCity, idRestants);
 			i++;
-			// TODO
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
 		}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
