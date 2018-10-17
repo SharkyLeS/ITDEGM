@@ -77,6 +77,8 @@ public class TSPSolver {
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
 		int i=1;
+		/* int idcity=0;
+		int [] villesrestantes=Constructionvilles(); */
 		ArrayList<Integer> idRestants = new ArrayList<Integer>(); //Erreurs dans les index dans instances ? on ne peut pas considérer la dernière ville
 		idRestants=this.initialiseID(idRestants);
 		int idCity=this.CherchePlusProche(0, idRestants);
@@ -87,6 +89,10 @@ public class TSPSolver {
 			this.removeDisponibleCity(idRestants, idCity);
 			idCity=this.CherchePlusProche(idCity, idRestants);
 			i++;
+			/*int u = Indiceplusproche(idcity,villesrestantes);
+			m_solution.setCityPosition(u, i);
+			idcity=u;
+			i++;*/
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
 		}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
@@ -185,4 +191,35 @@ public class TSPSolver {
 			}
 		}
 	}
+	
+	//Methode bis 
+	
+	/* public int Indiceplusproche(int idcity, int[] villesrestantes) throws Exception {
+		if((idcity<0)||(idcity>m_instance.getNbCities()-1)) {
+			throw new Exception("Error : index " + idcity
+					+ " is not valid, it should range between 0 and "
+					+ (m_instance.getNbCities()-1));
+		}
+		else {
+		int nbcity=m_instance.getNbCities();
+		long dmin=10000000;
+		int indiceplusproche=idcity;
+		for (int i=0;(i<nbcity)&&(i!=idcity);i++) {
+			if ((villesrestantes[i]!=-1)&&(m_instance.getDistances(idcity,i)<dmin)) {
+				dmin=m_instance.getDistances(idcity,i);
+				indiceplusproche=i;
+			}
+		}
+		villesrestantes[idcity]=-1;
+		return indiceplusproche;
+
+	}
+}
+	public int[] Constructionvilles() {
+		int[] villes=new int [m_instance.getNbCities()];
+		for (int i=0;i<m_instance.getNbCities();i++) {
+			villes[i]=i;
+		}
+		return villes;
+	} */
 }
