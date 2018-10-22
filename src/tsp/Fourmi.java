@@ -22,7 +22,16 @@ public class Fourmi extends Colonie {
 	
 	//Met à jour this.proba autour de i ; tourne avant de choisir une ville
 	public void majProba() {
-		
+		int i = this.villesParcourues.get(this.villesParcourues.size()-1);
+		double acc = 0.0;
+		for (int j : this.villesRestantes) { // d'abord le numérateur
+			this.proba[i][j] = Math.pow(super.getPheromones(i, j), super.getAlpha()) * 
+					Math.pow(super.getVisibilite(i,j), super.getBeta());
+			acc += this.proba[i][j];
+		}
+		for (int j : this.villesRestantes) { //on divise par le dénominateur, commun à toutes les probas
+			this.proba[i][j] = this.proba[i][j]/acc;
+		}
 	}
 	
 	/*avec le math.random et les probas

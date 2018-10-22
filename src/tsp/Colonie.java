@@ -55,6 +55,10 @@ public abstract class Colonie {
 	public double[][] getVisibilite() {
 		return visibilite;
 	}
+	
+	public double getVisibilite(int i, int j) {
+		return visibilite[i][j];
+	}
 
 	// ne pas priviliégier ce getter
 	public double[][] getPheromones() {
