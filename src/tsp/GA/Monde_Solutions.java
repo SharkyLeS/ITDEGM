@@ -91,4 +91,17 @@ public class Monde_Solutions {
 		parents.add(occurences.get(p2));
 		return parents;
 	}
+	
+	/*
+	 * Tire aléatoirement deux villes de la solution et les échange.
+	 */
+	public void mutation(Solution s) throws Exception {
+		// Attention tout de même à ne pas changer la ville de départ/arrivée
+		int p1 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
+		int p2 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
+		int v1 = s.getCity(p1);
+		int v2 = s.getCity(p2);
+		s.setCityPosition(v1, p2);
+		s.setCityPosition(v2, p1);
+	}
 }
