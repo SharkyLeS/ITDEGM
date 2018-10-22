@@ -35,17 +35,17 @@ public class Fourmi extends Colonie {
 	}
 	
 	//Renvoie la longueur totale parcourue (somme des trajets)
-	public int getLongueur() {
+	public int getLongueur() { //Max
 		return 0;
 	}
 	
 	//Renvoie la quantité supplémentaire de phéromones (delta tau) à déposer sur tous les arcs empruntés
-	public double getDeltaPheromones() {
+	public double getDeltaPheromones() { //Max
 		return 0.0;
 	}
 	
 	//utilise setPheromones pour modifier super.pheromones
-	public void majPheromones() {
+	public void majPheromones() { // Max
 		// rho * ancienne valeur + delta tau
 	}
 	
