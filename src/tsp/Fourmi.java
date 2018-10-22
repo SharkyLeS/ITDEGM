@@ -49,4 +49,11 @@ public class Fourmi extends Colonie {
 		// rho * ancienne valeur + delta tau
 	}
 	
+	public ArrayList<Integer> getVillesRestantes() {
+		return this.villesRestantes;
+	}
+	
+	public ArrayList<Integer> getVillesParcourues() {
+		return this.villesParcourues;
+	}
 }

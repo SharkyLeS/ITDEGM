@@ -73,4 +73,10 @@ public abstract class Colonie {
 		this.pheromones[i][j] = valeur;
 	}
 	
+	public void lanceFourmi() {
+		Fourmi f = new Fourmi(0);
+		while (f.getVillesRestantes().size()==0) {
+			// ...
+		}
+	}
 }
