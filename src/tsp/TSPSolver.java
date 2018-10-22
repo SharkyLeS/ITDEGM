@@ -89,6 +89,11 @@ public class TSPSolver {
 			this.removeDisponibleCity(idRestants, idCity);
 			idCity=this.CherchePlusProche(idCity, idRestants);
 			i++;
+			
+			/* Lancées de fourmis en baaaaaalllllll
+			appel à Colonie.lanceFourmi à formuler
+			// */
+			
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
 		}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));

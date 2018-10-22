@@ -4,7 +4,7 @@ public abstract class Colonie {
 	private double alpha; //pondere les phéromones
 	private double beta; //pondere la visibilité
 	private double rho; //
-	private double Q;
+	private int Q;
 	private double[][] visibilite;
 	private double[][] pheromones; // les tau (i,j)
 	private Instance instance;
@@ -12,7 +12,7 @@ public abstract class Colonie {
 	public Colonie() {
 	}
 	
-	public Colonie(Instance m_instance,double alph, double bet, double rh, double q) throws Exception {
+	public Colonie(Instance m_instance,double alph, double bet, double rh, int q) throws Exception {
 		this.instance = m_instance;
 		this.alpha = alph;
 		this.beta = bet;
@@ -52,6 +52,10 @@ public abstract class Colonie {
 		return rho;
 	}
 
+	public int getQ() {
+		return this.Q;
+	}
+	
 	public double[][] getVisibilite() {
 		return visibilite;
 	}
@@ -77,10 +81,12 @@ public abstract class Colonie {
 		this.pheromones[i][j] = valeur;
 	}
 	
-	public void lanceFourmi() {
-		Fourmi f = new Fourmi(0);
+	public void lanceFourmi(int villeDeDepart) throws Exception {
+		Fourmi f = new Fourmi(villeDeDepart);
 		while (f.getVillesRestantes().size()==0) {
-			// ...
+			f.majProba();
+			f.choixVille();
 		}
+		f.majPheromones();
 	}
 }

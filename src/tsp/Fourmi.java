@@ -11,6 +11,7 @@ public class Fourmi extends Colonie {
 	public Fourmi(int villeDeDepart) {
 		super(); // A VOIR
 		this.villesParcourues = new ArrayList<Integer>();
+		this.villesParcourues.add(villeDeDepart);
 		this.proba = new Double[super.getInstance().getNbCities()][super.getInstance().getNbCities()];
 		this.villesRestantes = new ArrayList<Integer>();
 		for(int i=0;i<super.getInstance().getNbCities();i++) {
@@ -39,10 +40,42 @@ public class Fourmi extends Colonie {
 	 * Est-ce que ce sera exactement ? -> on prend le dernier
 	 * 
 	 * + MET A JOUR VILLES RESTANTES ET VILLES PARCOURUES*/
-	public void choixVille() {
-		
+	public void choixVille() throws Exception {
+		int i = this.villesParcourues.get(this.villesParcourues.size()-1);
+		double x = Math.random();
+		double acc = 0;
+		int villeChoisie = 0;
+		for (int j : this.villesRestantes) {
+			if (x<acc+ this.proba[i][j]) {
+				villeChoisie = j;
+				break;
+			} else if (j == this.villesRestantes.get(this.villesRestantes.size()-1)) {
+				villeChoisie = j;
+				break;
+			} else {
+				acc += this.proba[i][j];
+			}
+		}
+		removeDisponibleCity(this.villesRestantes, villeChoisie);
+		this.villesParcourues.add(villeChoisie);
 	}
 	
+	
+	public void removeDisponibleCity(ArrayList<Integer> idRestants, int idCity) throws Exception{
+		if((idCity<0)||(idCity>super.getInstance().getNbCities()-1)) {
+			throw new Exception("Error : index " + idCity
+					+ " is not valid, it should range between 0 and "
+					+ (super.getInstance().getNbCities()-1));
+		}
+		else {
+			for(int i=0;i<idRestants.size();i++) {
+				if(idRestants.get(i)==idCity) {
+					idRestants.remove(i);
+					break;
+				}
+			}
+		}
+	}
 	//Renvoie la longueur totale parcourue (somme des trajets)
 	public int getLongueur() { //Max
 		return 0;
