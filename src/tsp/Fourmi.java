@@ -78,18 +78,39 @@ public class Fourmi extends Colonie {
 		}
 	}
 	//Renvoie la longueur totale parcourue (somme des trajets)
-	public double getLongueur() { //Max
-		return 0.0;
+	public long getLongueur() throws Exception { //Max
+		long distance=0;
+		int villesuiv=this.getVillesParcourues().get(1);
+		int villeprec=this.getVillesParcourues().get(0);
+		int i=1;
+		while (i<this.getVillesParcourues().size()) {
+			distance=distance+super.getInstance().getDistances(villeprec, villesuiv);
+			villeprec=villesuiv;
+			villesuiv=this.getVillesParcourues().get(i+1);
+			i++;
+			
+		}
+		return distance;
 	}
 	
 	//Renvoie la quantité supplémentaire de phéromones (delta tau) à déposer sur tous les arcs empruntés
-	public double getDeltaPheromones() { //Max
-		return 0.0;
+	public double getDeltaPheromones() throws Exception { //Max
+		long DeltaPheromones=0;
+		DeltaPheromones=super.getQ()/this.getLongueur();
+		return DeltaPheromones;
 	}
 	
 	//utilise setPheromones pour modifier super.pheromones
-	public void majPheromones() { // Max
-		// rho * ancienne valeur + delta tau
+	public void majPheromones() throws Exception { // Max
+		double [][] MatPheromone=new double[this.getVillesParcourues().size()][this.getVillesParcourues().size()]; //le setPheromone([][] pheromones) requiert la creation du nouvelle matrice ph�ronome appel� MatPheromones
+		for (int i=0;i<this.getVillesParcourues().size();i++) {
+			for (int j=0;j<this.getVillesParcourues().size();i++) {
+				super.setPheromones((super.getRho()*super.getPheromones(i,j))+this.getDeltaPheromones(),i,j);
+				MatPheromone[i][j]=super.getRho()*super.getPheromones(i,j)+this.getDeltaPheromones();
+			}
+		}
+		super.setPheromones(MatPheromone);
+		
 	}
 	
 	public ArrayList<Integer> getVillesRestantes() {
