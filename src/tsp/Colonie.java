@@ -1,5 +1,7 @@
 package tsp;
 
+import java.util.ArrayList;
+
 public class Colonie {
 	private double alpha; //pondere les phéromones
 	private double beta; //pondere la visibilité
@@ -81,12 +83,13 @@ public class Colonie {
 		this.pheromones[i][j] = valeur;
 	}
 	
-	public void lanceFourmi(int villeDeDepart) throws Exception {
+	public ArrayList<Integer> lanceFourmi(int villeDeDepart) throws Exception {
 		Fourmi f = new Fourmi(villeDeDepart);
 		while (f.getVillesRestantes().size()==0) {
 			f.majProba();
 			f.choixVille();
 		}
 		f.majPheromones();
+		return f.getVillesParcourues();
 	}
 }

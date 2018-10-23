@@ -75,9 +75,19 @@ public class TSPSolver {
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
 		
-		// INITIALISATION
+		// INITIALISATION FOURMIS
+		Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
+		int i = 0;
+		// BOUCLE
+		do {
+			ArrayList<Integer> parcours = colo.lanceFourmi(i);
+			double distParcours = this.getLongueur(parcours);
+			if (distParcours<m_solution.evaluate()) {
+				// J'EN SUIS LA
+			}
+			
+		} while ((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
 		
-		//
 		/* 
 		ArrayList<Long> l = new ArrayList<Long>(m_instance.getNbCities());
 		for (int j=0;j<m_instance.getNbCities();j++) {
@@ -85,7 +95,6 @@ public class TSPSolver {
 			ArrayList<Integer> idRestants = new ArrayList<Integer>();
 			idRestants=this.initialiseID(idRestants);
 			int idCity=this.CherchePlusProche(j, idRestants);
-			Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
 			do
 			{
 				//Stupid Heuristic
@@ -205,4 +214,14 @@ public class TSPSolver {
 		}
 		return l.get(indicemin);
 	}
+	
+	
+	public double getLongueur(ArrayList<Integer> l) throws Exception {
+		double acc = 0;
+		for (int i = 0; i < l.size()-1; i++) {
+			acc += m_instance.getDistances(l.get(i), l.get(i+1));
+		}
+		return acc;
+	}
+	
 }
