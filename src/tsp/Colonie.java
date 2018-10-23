@@ -1,6 +1,6 @@
 package tsp;
 
-public abstract class Colonie {
+public class Colonie {
 	private double alpha; //pondere les phéromones
 	private double beta; //pondere la visibilité
 	private double rho; //

@@ -35,7 +35,7 @@ public class TSPSolver {
 	/** Time given to solve the problem. */
 	private long m_timeLimit;
 
-	
+
 	// -----------------------------
 	// ----- CONSTRUCTOR -----------
 	// -----------------------------
@@ -72,38 +72,39 @@ public class TSPSolver {
 	public void solve() throws Exception
 	{
 		m_solution.print(System.err);
-		
-		// Example of a time loop
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
+		
+		// INITIALISATION
+		
+		//
+		/* 
 		ArrayList<Long> l = new ArrayList<Long>(m_instance.getNbCities());
 		for (int j=0;j<m_instance.getNbCities();j++) {
-		int i=1;
-		ArrayList<Integer> idRestants = new ArrayList<Integer>(); //Erreurs dans les index dans instances ? on ne peut pas considérer la dernière ville
-		idRestants=this.initialiseID(idRestants);
-		int idCity=this.CherchePlusProche(j, idRestants);
-		do
-		{
-			//Stupid Heuristic
-			m_solution.setCityPosition(idCity, i);
-			this.removeDisponibleCity(idRestants, idCity);
-			idCity=this.CherchePlusProche(idCity, idRestants);
-			i++;
-			
-			/* Lancées de fourmis en baaaaaalllllll
-			appel à Colonie.lanceFourmi à formuler
-			// */
-			
-			// Code a loop base on time here
-			spentTime = System.currentTimeMillis() - startTime;
-		}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
-		m_solution.setCityPosition(0, 0);
-		m_solution.setCityPosition(0, m_instance.getNbCities());
-		l.add(m_solution.getObjectiveValue());
-	}
-	 Long m =MinimumListe(l);
-	}
+			int i=1;
+			ArrayList<Integer> idRestants = new ArrayList<Integer>();
+			idRestants=this.initialiseID(idRestants);
+			int idCity=this.CherchePlusProche(j, idRestants);
+			Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
+			do
+			{
+				//Stupid Heuristic
+				m_solution.setCityPosition(idCity, i);
+				this.removeDisponibleCity(idRestants, idCity);
+				idCity=this.CherchePlusProche(idCity, idRestants);
+				i++;
 
+				// Code a loop base on time here
+				spentTime = System.currentTimeMillis() - startTime;
+			}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
+			m_solution.setCityPosition(0, 0);
+			m_solution.setCityPosition(0, m_instance.getNbCities());
+			l.add(m_solution.getObjectiveValue());
+		}
+		Long m =MinimumListe(l);
+		// */
+	}
+		
 	// -----------------------------
 	// ----- GETTERS / SETTERS -----
 	// -----------------------------
@@ -168,9 +169,9 @@ public class TSPSolver {
 			}
 			return idPlusProche;
 		}
-		
+
 	}
-	
+
 	public ArrayList<Integer> initialiseID(ArrayList<Integer> idRestants) {
 		//for(int i=-1;i<m_instance.getNbCities()-2;i++) {
 		for(int i=1;i<m_instance.getNbCities();i++) {
@@ -179,7 +180,7 @@ public class TSPSolver {
 		}
 		return idRestants;
 	}
-	
+
 	public void removeDisponibleCity(ArrayList<Integer> idRestants, int idCity) throws Exception{
 		if((idCity<0)||(idCity>m_instance.getNbCities()-1)) {
 			throw new Exception("Error : index " + idCity

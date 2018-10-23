@@ -8,6 +8,7 @@ public class Fourmi extends Colonie {
 	private Double[][] proba; //Matrice symétrique des probabilités, partiellement mise à jour à chaque étape
 	private ArrayList<Integer> villesRestantes;
 	
+	
 	public Fourmi(int villeDeDepart) {
 		super(); // A VOIR
 		this.villesParcourues = new ArrayList<Integer>();
