@@ -3,14 +3,14 @@ import java.util.ArrayList;
 
 import tsp.*;
 
-public class Monde_Solutions {
+public class GA{
 
 	private ArrayList<Solution> monde_solutions;
 	private ArrayList<Double> fitness; // Mémorise le coût de chacune des solutions (doit donc faire taille_monde)
 	private int taille_Monde;
 	private Instance m_instance;
 	
-	public Monde_Solutions(Instance i, int taille) throws Exception {
+	public GA(Instance i, int taille) throws Exception {
 		m_instance=i;
 		taille_Monde=taille;
 		ArrayList<Solution> m = new ArrayList<Solution>();
@@ -24,7 +24,7 @@ public class Monde_Solutions {
 		monde_solutions=m;
 	}
 
-	public Monde_Solutions(Instance i, int taille, ArrayList<Solution> monde) {
+	public GA(Instance i, int taille, ArrayList<Solution> monde) {
 		m_instance=i;
 		taille_Monde=taille;
 		monde_solutions=monde;
@@ -75,6 +75,7 @@ public class Monde_Solutions {
 	
 	/*
 	 *  Choisis 2 parents au sein du monde en fonction de leurs coûts (ceux de coût élevé ont moins de chance d'être choisis comme parents)
+	 *  D'autres implémentations sont envisageables pour comparer les performances
 	 */
 	public ArrayList<Solution> choisir_Parents() throws Exception {
 		ArrayList<Solution> parents = new ArrayList<Solution>();
@@ -103,5 +104,64 @@ public class Monde_Solutions {
 		int v2 = s.getCity(p2);
 		s.setCityPosition(v1, p2);
 		s.setCityPosition(v2, p1);
+	}
+	
+	/*
+	 * Méthode de Crossover permettant de tester de nouvelles combinaisons (en combiant cette méthode avec les mutations)
+	 * On implémente ici le MPX : Maximal Preservative Crossover
+	 */
+	public ArrayList<Solution> MPX(ArrayList<Solution> parents) throws Exception {
+		int coupure = 0;
+		int nb_Cities = parents.get(0).getInstance().getNbCities();
+		if(nb_Cities<=10) coupure=nb_Cities/2;
+		// On s'affranchit d'un cas de très petite instance par une modélisation basique
+		else {
+			coupure = 10+(int)(Math.random()*(nb_Cities-9));  
+			// On choisit la coupure du crossover telle que : 10<=coupure<=nb_Cities/2
+		}
+		
+		// On réalise le crossover
+		Solution o1 = new Solution(m_instance);
+		Solution o2 = new Solution(m_instance);
+		ArrayList<Integer> cities1 = new ArrayList<Integer>();
+		ArrayList<Integer> cities2 = new ArrayList<Integer>();
+		ArrayList<Solution> offsprings = new ArrayList<Solution>();
+		
+		for(int i=0;i<nb_Cities;i++) {
+			if(i<=coupure) {
+				o1.setCityPosition(parents.get(0).getCity(i), i);
+				cities1.add(parents.get(0).getCity(i));
+				o2.setCityPosition(parents.get(1).getCity(i), i);
+				cities2.add(parents.get(1).getCity(i));
+			}
+			else {
+				int city1 =0;
+				boolean trouve1=false;
+				
+				// On cherche les villes du parent 2 (en parcourant dans l'ordre) qui n'ont pas encore été répliquées dans le premier enfant
+				while((city1<nb_Cities)&&(!trouve1)) {
+					if(!cities2.contains(parents.get(1).getCity(city1))) {
+						o1.setCityPosition(parents.get(1).getCity(city1), i);
+						trouve1=true;
+					}
+					city1++;
+				}
+				
+				// Même chose pour le deuxième enfant
+				int city2=0;
+				boolean trouve2=false;
+				
+				while((city2<nb_Cities)&&(!trouve2)) {
+					if(!cities1.contains(parents.get(0).getCity(city2))) {
+						o2.setCityPosition(parents.get(0).getCity(city2), i);
+						trouve2=true;
+					}
+					city2++;
+				}
+			}	
+		}
+		offsprings.add(o1);
+		offsprings.add(o2);
+		return offsprings;
 	}
 }
