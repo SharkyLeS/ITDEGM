@@ -6,7 +6,7 @@ import tsp.*;
 public class GA{
 
 	private ArrayList<Solution> monde_solutions;
-	private ArrayList<Double> fitness; // Mémorise le coût de chacune des solutions (doit donc faire taille_monde)
+	private ArrayList<Long> fitness; // Mémorise le coût de chacune des solutions (doit donc faire taille_monde)
 	private int taille_Monde;
 	private Instance m_instance;
 	
@@ -14,12 +14,12 @@ public class GA{
 		m_instance=i;
 		taille_Monde=taille;
 		ArrayList<Solution> m = new ArrayList<Solution>();
-		ArrayList<Double> f = new ArrayList<Double>();
+		ArrayList<Long> f = new ArrayList<Long>();
 		for(int j=0;j<taille_Monde;j++) {
 			Solution s = new Solution(m_instance);
 			m.add(s);   // Remplacer par les solutions obtenues par calcul du plusProcheVoisin sur différentes villes
 			// Par conséquent, il est nécesaire que taille_monde<=m_instance.getNbCities()
-			f.add(1/s.evaluate());  // on associe à chaque solution sa "fitness" = 1/son coût --> on cherche à trouver la soltuion de plus grande fitness
+			f.add(1/s.getObjectiveValue());  // on associe à chaque solution sa "fitness" = 1/son coût --> on cherche à trouver la soltuion de plus grande fitness
 		}
 		monde_solutions=m;
 	}
@@ -54,11 +54,11 @@ public class GA{
 		this.m_instance = m_instance;
 	}
 	
-	public ArrayList<Double> getFitness() {
+	public ArrayList<Long> getFitness() {
 		return fitness;
 	}
 
-	public void setFitness(ArrayList<Double> fitness) {
+	public void setFitness(ArrayList<Long> fitness) {
 		this.fitness = fitness;
 	}
 	
@@ -164,4 +164,19 @@ public class GA{
 		offsprings.add(o2);
 		return offsprings;
 	}
+	
+	/*
+	 * Retourne true si le fils o à un coût inférieur ou égal à ses parents, false sinon
+	 */
+	public boolean isElligible(Solution o, ArrayList<Solution> parents, double lambda) {
+		double objective_fitness = 0;
+		double p1_fitness = 1/parents.get(0).getObjectiveValue();
+		double p2_fitness = 1/parents.get(1).getObjectiveValue();
+		// On codera lambda croissant graduellement de 0 à 1 
+		if(p1_fitness>=p2_fitness) objective_fitness = (1-lambda)*p2_fitness + lambda*p1_fitness;
+		else objective_fitness = (1-lambda)*p1_fitness + lambda*p2_fitness;
+		return (1/o.getObjectiveValue())<=objective_fitness;
+	}
+	
+	
 }
