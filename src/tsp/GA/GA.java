@@ -253,13 +253,25 @@ public class GA extends AMetaheuristic{
 			this.addSolution_Monde(this.mutation(sol));
 		}
 		
+		/*
+		 * On fait GA tant que timeLimit n'a pas été atteint.
+		 */
 		long startTime = System.currentTimeMillis();
 		long spentTime=0;
 		while(spentTime<getTimeLimit()*1000-100) {
 			this.setMonde_solutions(this.offspring_Selection());
 			spentTime = System.currentTimeMillis()-startTime;
 		}
-		return null;
+		
+		Solution opti=this.getMonde_solutions().get(0);
+		long best_sol = this.getMonde_solutions().get(0).getObjectiveValue();
+		for(Solution s : this.getMonde_solutions()) {
+			if(s.getObjectiveValue()<=best_sol) {
+				opti=s;
+				best_sol=s.getObjectiveValue();
+			}
+		}
+		return opti;
 	}
 
 	public long getTimeLimit() {
