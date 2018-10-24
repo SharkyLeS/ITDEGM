@@ -12,8 +12,8 @@ public class Colonie extends AMetaheuristic {
 	private double[][] visibilite;
 	private double[][] pheromones; // les tau (i,j)
 
-	public Colonie(Instance inst) throws Exception {
-		super(inst, "Colonie de fourmis");
+	public Colonie() throws Exception {
+		super(m_instance, "Colonie de fourmis");
 	}
 	
 	public Colonie(Instance instance,double alph, double bet, double rh, int q) throws Exception {

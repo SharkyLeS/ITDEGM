@@ -54,4 +54,8 @@ abstract public class AMetaheuristic {
 	{
 		return m_name;
 	}
+	
+	public Instance getInstance() {
+		return m_instance;
+	}
 }

@@ -10,7 +10,7 @@ public class Fourmi extends Colonie {
 	
 	
 	public Fourmi(int villeDeDepart) {
-		super(); // A VOIR
+		super(m_instance); // A VOIR
 		this.villesParcourues = new ArrayList<Integer>();
 		this.villesParcourues.add(villeDeDepart);
 		this.proba = new Double[super.getInstance().getNbCities()][super.getInstance().getNbCities()];
