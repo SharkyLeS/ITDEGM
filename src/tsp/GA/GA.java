@@ -10,6 +10,7 @@ public class GA extends AMetaheuristic{
 	private ArrayList<Long> fitness; // Mémorise le coût de chacune des solutions 
 	// (doit donc faire taille_monde)
 	private int taille_Monde;
+	private long timeLimit;
 	private Instance m_instance;
 	// Prportion de la population qui doit être renouvelée dans génération suivante
 	public static final double Success_Ratio = 0.6;
@@ -17,7 +18,7 @@ public class GA extends AMetaheuristic{
 	public static final double Max_Selection_Pressure = 30;
 	public static final double Proba_Mutation = 0.15;
 	
-	public GA(Instance i, int taille) throws Exception {
+	public GA(Instance i, int taille, long timeLimit) throws Exception {
 		super(i,"Genetic Algorithm");
 		taille_Monde=taille;
 		ArrayList<Solution> m = new ArrayList<Solution>();
@@ -29,14 +30,21 @@ public class GA extends AMetaheuristic{
 			f.add(1/s.getObjectiveValue());  // on associe à chaque solution sa "fitness" = 1/son coût --> on cherche à trouver la soltuion de plus grande fitness
 		}
 		monde_solutions=m;
+		this.timeLimit=timeLimit;
 	}
 
-	public GA(Instance i, int taille, ArrayList<Solution> monde) throws Exception {
+	public GA(Instance i, int taille, ArrayList<Solution> monde, long timeLimit) throws Exception {
 		super(i,"Genetic Algorithm");
 		taille_Monde=taille;
 		monde_solutions=monde;
+		this.timeLimit=timeLimit;
 	}
 
+	public void addSolution_Monde(Solution s) {
+		this.monde_solutions.add(s);
+		this.setTaille_Monde(getTaille_Monde()+1);
+	}
+	
 	public ArrayList<Solution> getMonde_solutions() {
 		return monde_solutions;
 	}
@@ -111,7 +119,7 @@ public class GA extends AMetaheuristic{
 	/*
 	 * Tire aléatoirement deux villes de la solution et les échange.
 	 */
-	public void mutation(Solution s) throws Exception {
+	public Solution mutation(Solution s) throws Exception {
 		// Attention tout de même à ne pas changer la ville de départ/arrivée
 		int p1 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
 		int p2 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
@@ -119,6 +127,7 @@ public class GA extends AMetaheuristic{
 		int v2 = s.getCity(p2);
 		s.setCityPosition(v1, p2);
 		s.setCityPosition(v2, p1);
+		return s;
 	}
 	
 	/*
@@ -213,6 +222,8 @@ public class GA extends AMetaheuristic{
 			ArrayList<Solution> parents = this.choisir_Parents();
 			ArrayList<Solution> offsprings = this.MPX(parents);
 			for(Solution o : offsprings) {
+				double p = Math.random();
+				if(p<=Proba_Mutation) o = this.mutation(o);
 				if(isElligible(o, parents, lambda)) offsprings_Elligibles.add(o);
 				else offsprings_Rejetes.add(o);
 			}
@@ -234,7 +245,36 @@ public class GA extends AMetaheuristic{
 
 	@Override
 	public Solution solve(Solution sol) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		/* On crée un premier monde de solutions par mutations a partir de la solution 
+		 * sol obtenue par les plus proches voisins.
+		 */
+		this.addSolution_Monde(sol);
+		for(int i=0;i<getTaille_Monde()-1;i++) {
+			this.addSolution_Monde(this.mutation(sol));
+		}
+		
+		/*
+		 * On fait GA tant que timeLimit n'a pas été atteint.
+		 */
+		long startTime = System.currentTimeMillis();
+		long spentTime=0;
+		while(spentTime<getTimeLimit()*1000-100) {
+			this.setMonde_solutions(this.offspring_Selection());
+			spentTime = System.currentTimeMillis()-startTime;
+		}
+		
+		Solution opti=this.getMonde_solutions().get(0);
+		long best_sol = this.getMonde_solutions().get(0).getObjectiveValue();
+		for(Solution s : this.getMonde_solutions()) {
+			if(s.getObjectiveValue()<=best_sol) {
+				opti=s;
+				best_sol=s.getObjectiveValue();
+			}
+		}
+		return opti;
+	}
+
+	public long getTimeLimit() {
+		return timeLimit;
 	}
 }
