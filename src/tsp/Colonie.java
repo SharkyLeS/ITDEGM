@@ -89,7 +89,7 @@ public class Colonie extends AMetaheuristic {
 		}
 		f.majPheromones();
 		f.getVillesParcourues().add(f.getVillesParcourues().get(0));
-		return f.getVillesParcourues();
+		return f.getVillesParcourues(); 
 	}
 
 	public Solution solve(Solution sol) throws Exception {

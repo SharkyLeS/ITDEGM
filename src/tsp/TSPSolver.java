@@ -109,7 +109,7 @@ public class TSPSolver {
 			double distParcours = this.getLongueur(parcours);
 			if (distParcours<=minimum) { // if (distanceParcours<=m_solution.evaluate)
 				minimum=distParcours; // Modifier directement m_solution
-				NbCycles=0; // Tout transferer dans le solve de Colonie
+				NbCycles=0; // Tout transferer dans le solve de Colonie 
 			}
 			else {
 				NbCycles ++;

@@ -10,7 +10,7 @@ public class PlusProchesVoisins extends AHeuristic {
 
 	public PlusProchesVoisins(Instance instance, String name, long timeLim) throws Exception {
 		super(instance, name);
-		this.timeLimit=timeLim;
+		this.timeLimit=timeLim; 
 	}
 	public long gettimeLimit() {
 		return this.timeLimit;
