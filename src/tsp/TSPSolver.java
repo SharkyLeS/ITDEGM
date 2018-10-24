@@ -77,24 +77,34 @@ public class TSPSolver {
 		
 		// INITIALISATION FOURMIS
 		Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
-		int i = 0;
+		int i = 2;
+		int NbCycles=0;
+		ArrayList<Integer> parcoursinit=colo.lanceFourmi(0);
+		double distanceParcoursinit=this.getLongueur(parcoursinit);
+		double minimum=distanceParcoursinit;
 		// BOUCLE
 		do {
 			ArrayList<Integer> parcours = colo.lanceFourmi(i);
 			double distParcours = this.getLongueur(parcours);
-			if (distParcours<m_solution.evaluate()) {
-				// J'EN SUIS LA
+			if (distParcours<=minimum) { // if (distanceParcours<=m_solution.evaluate)
+				minimum=distParcours;
+				NbCycles=0;
 			}
+			else {
+				NbCycles ++;
+			}
+			i++;
+			i=i%(m_instance.getNbCities());
 			
-		} while ((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
-		
+		} while ((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities())&&(NbCycles<100));
+		for (int k=0;k<m_instance.getNbCities();i++) {
+			m_solution.setCityPosition(k, k);
+		}
 		/* 
-		ArrayList<Long> l = new ArrayList<Long>(m_instance.getNbCities());
-		for (int j=0;j<m_instance.getNbCities();j++) {
 			int i=1;
 			ArrayList<Integer> idRestants = new ArrayList<Integer>();
 			idRestants=this.initialiseID(idRestants);
-			int idCity=this.CherchePlusProche(j, idRestants);
+			int idCity=this.CherchePlusProche(0, idRestants);
 			do
 			{
 				//Stupid Heuristic
@@ -108,9 +118,6 @@ public class TSPSolver {
 			}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
 			m_solution.setCityPosition(0, 0);
 			m_solution.setCityPosition(0, m_instance.getNbCities());
-			l.add(m_solution.getObjectiveValue());
-		}
-		Long m =MinimumListe(l);
 		// */
 	}
 		

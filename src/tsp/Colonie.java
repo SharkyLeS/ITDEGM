@@ -85,11 +85,12 @@ public class Colonie {
 	
 	public ArrayList<Integer> lanceFourmi(int villeDeDepart) throws Exception {
 		Fourmi f = new Fourmi(villeDeDepart);
-		while (f.getVillesRestantes().size()==0) {
+		while (f.getVillesRestantes().size()!=0) {
 			f.majProba();
 			f.choixVille();
 		}
 		f.majPheromones();
+		f.getVillesParcourues().add(f.getVillesParcourues().get(0));
 		return f.getVillesParcourues();
 	}
 }

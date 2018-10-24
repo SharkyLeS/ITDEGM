@@ -101,17 +101,12 @@ public class Fourmi extends Colonie {
 	}
 	
 	//utilise setPheromones pour modifier super.pheromones
-	public void majPheromones() throws Exception { // Max
-		double [][] MatPheromone=new double[this.getVillesParcourues().size()][this.getVillesParcourues().size()]; //le setPheromone([][] pheromones) requiert la creation du nouvelle matrice phéronome appelé MatPheromones
-		for (int i=0;i<this.getVillesParcourues().size();i++) {
+	public void majPheromones() throws Exception {
+			int i=this.getVillesParcourues().get(this.getVillesParcourues().size()-1);
 			for (int j=0;j<this.getVillesParcourues().size();i++) {
 				super.setPheromones((super.getRho()*super.getPheromones(i,j))+this.getDeltaPheromones(),i,j);
-				MatPheromone[i][j]=super.getRho()*super.getPheromones(i,j)+this.getDeltaPheromones();
-			}
+				}		
 		}
-		super.setPheromones(MatPheromone);
-		
-	}
 	
 	public ArrayList<Integer> getVillesRestantes() {
 		return this.villesRestantes;
