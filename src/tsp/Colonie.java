@@ -2,20 +2,22 @@ package tsp;
 
 import java.util.ArrayList;
 
-public class Colonie {
+import tsp.metaheuristic.AMetaheuristic;
+
+public class Colonie extends AMetaheuristic {
 	private double alpha; //pondere les phéromones
 	private double beta; //pondere la visibilité
 	private double rho; //
 	private int Q;
 	private double[][] visibilite;
 	private double[][] pheromones; // les tau (i,j)
-	private Instance instance;
 
-	public Colonie() {
+	public Colonie(Instance inst) throws Exception {
+		super(inst, "Colonie de fourmis");
 	}
 	
-	public Colonie(Instance m_instance,double alph, double bet, double rh, int q) throws Exception {
-		this.instance = m_instance;
+	public Colonie(Instance instance,double alph, double bet, double rh, int q) throws Exception {
+		super(instance, "Colonie de fourmi");
 		this.alpha = alph;
 		this.beta = bet;
 		this.rho = rh;
@@ -36,10 +38,6 @@ public class Colonie {
 			this.visibilite[i][i] = 0;
 			this.pheromones[i][i] = 0;
 		}
-	}
-	
-	public Instance getInstance() {
-		return this.instance;
 	}
 
 	public double getAlpha() {
@@ -92,5 +90,10 @@ public class Colonie {
 		f.majPheromones();
 		f.getVillesParcourues().add(f.getVillesParcourues().get(0));
 		return f.getVillesParcourues();
+	}
+
+	public Solution solve(Solution sol) throws Exception {
+		
+		return null;
 	}
 }

@@ -1,6 +1,13 @@
 package tsp;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import tsp.GA.GA;
+import tsp.heuristic.AHeuristic;
+import tsp.metaheuristic.AMetaheuristic;
+import tsp.metaheuristic.ThreadPerso;
 
 /**
  * 
@@ -72,6 +79,20 @@ public class TSPSolver {
 	public void solve() throws Exception
 	{
 		m_solution.print(System.err);
+		AHeuristic ini = (new PlusProchesVoisins(m_instance,"PlusProchesVoisins",m_timeLimit));
+		ini.solve();
+		Solution solutionIni = ini.getSolution();
+		
+		Runnable[] solvers = new Runnable[4];
+		solvers[0] = new ThreadPerso(new GA(m_instance,100));
+		//solvers[1] = new ThreadPerso
+		//solvers[2] =
+		//solvers[3] =
+		ExecutorService exe = Executors.newFixedThreadPool(4);
+		for (int i=0; i<4; i++) {
+			exe.execute(solvers[i]);
+		}
+		
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
 		
@@ -87,8 +108,8 @@ public class TSPSolver {
 			ArrayList<Integer> parcours = colo.lanceFourmi(i);
 			double distParcours = this.getLongueur(parcours);
 			if (distParcours<=minimum) { // if (distanceParcours<=m_solution.evaluate)
-				minimum=distParcours;
-				NbCycles=0;
+				minimum=distParcours; // Modifier directement m_solution
+				NbCycles=0; // Tout transferer dans le solve de Colonie
 			}
 			else {
 				NbCycles ++;
@@ -97,9 +118,6 @@ public class TSPSolver {
 			i=i%(m_instance.getNbCities());
 			
 		} while ((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities())&&(NbCycles<100));
-		for (int k=0;k<m_instance.getNbCities();i++) {
-			m_solution.setCityPosition(k, k);
-		}
 		/* 
 			int i=1;
 			ArrayList<Integer> idRestants = new ArrayList<Integer>();
