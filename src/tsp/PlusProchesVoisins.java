@@ -6,10 +6,14 @@ import tsp.heuristic.AHeuristic;
 import tsp.metaheuristic.AMetaheuristic;
 
 public class PlusProchesVoisins extends AHeuristic {
-	
+	private long timeLimit;
 
-	public PlusProchesVoisins(Instance instance, String name) throws Exception {
+	public PlusProchesVoisins(Instance instance, String name, long timeLim) throws Exception {
 		super(instance, name);
+		this.timeLimit=timeLim;
+	}
+	public long gettimeLimit() {
+		return this.timeLimit;
 	}
 	
 	public int CherchePlusProche(int idCity, ArrayList<Integer> idRestants) throws Exception {
@@ -76,7 +80,7 @@ public class PlusProchesVoisins extends AHeuristic {
 
 			// Code a loop base on time here
 			spentTime = System.currentTimeMillis() - startTime;
-		}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
+		}while((spentTime < (this.gettimeLimit() * 1000 - 100) )&&(i<m_instance.getNbCities()));
 		m_solution.setCityPosition(0, 0);
 		m_solution.setCityPosition(0, m_instance.getNbCities());
 		
