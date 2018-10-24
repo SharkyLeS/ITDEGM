@@ -2,16 +2,23 @@ package tsp.GA;
 import java.util.ArrayList;
 
 import tsp.*;
+import tsp.metaheuristic.AMetaheuristic;
 
-public class GA{
+public class GA extends AMetaheuristic{
 
 	private ArrayList<Solution> monde_solutions;
-	private ArrayList<Long> fitness; // Mémorise le coût de chacune des solutions (doit donc faire taille_monde)
+	private ArrayList<Long> fitness; // Mémorise le coût de chacune des solutions 
+	// (doit donc faire taille_monde)
 	private int taille_Monde;
 	private Instance m_instance;
+	// Prportion de la population qui doit être renouvelée dans génération suivante
+	public static final double Success_Ratio = 0.6;
+	// Nombre maximal de fils à générer à chaque itération pour créer gén suivante
+	public static final double Max_Selection_Pressure = 30;
+	public static final double Proba_Mutation = 0.15;
 	
 	public GA(Instance i, int taille) throws Exception {
-		m_instance=i;
+		super(i,"Genetic Algorithm");
 		taille_Monde=taille;
 		ArrayList<Solution> m = new ArrayList<Solution>();
 		ArrayList<Long> f = new ArrayList<Long>();
@@ -24,8 +31,8 @@ public class GA{
 		monde_solutions=m;
 	}
 
-	public GA(Instance i, int taille, ArrayList<Solution> monde) {
-		m_instance=i;
+	public GA(Instance i, int taille, ArrayList<Solution> monde) throws Exception {
+		super(i,"Genetic Algorithm");
 		taille_Monde=taille;
 		monde_solutions=monde;
 	}
@@ -60,6 +67,14 @@ public class GA{
 
 	public void setFitness(ArrayList<Long> fitness) {
 		this.fitness = fitness;
+	}
+	
+	/*
+	 * Représente la valeur de l'incrément de lambda à chaque itération 
+	 * Permet à lambda de croître graduellement de 0 à 1
+	 */
+	public double getTaux_Lambda() {
+		return 1/(this.getTaille_Monde()*Max_Selection_Pressure);
 	}
 	
 	/*
@@ -108,6 +123,7 @@ public class GA{
 	
 	/*
 	 * Méthode de Crossover permettant de tester de nouvelles combinaisons (en combiant cette méthode avec les mutations)
+	 * Renvoie des fils issus de parents, générés par le crossover MPX
 	 * On implémente ici le MPX : Maximal Preservative Crossover
 	 */
 	public ArrayList<Solution> MPX(ArrayList<Solution> parents) throws Exception {
@@ -178,5 +194,47 @@ public class GA{
 		return (1/o.getObjectiveValue())<=objective_fitness;
 	}
 	
-	
+	/*
+	 * On code ici tout le processus de séléction de la génération suivante, en faisant appel aux autres méthodes de la classe
+	 * Retourne une nouvelle génération
+	 */
+	public ArrayList<Solution> offspring_Selection() throws Exception{
+		int i=0;
+		ArrayList<Solution> offsprings_Elligibles = new ArrayList<Solution>();
+		ArrayList<Solution> offsprings_Rejetes = new ArrayList<Solution>();
+		double lambda = 0.0;
+		while((offsprings_Elligibles.size()<=Success_Ratio*this.getTaille_Monde())&&(i<Max_Selection_Pressure)) {
+			/* Tant que l'on a pas géneré Success_Ratio*this.getTaille_Monde()
+			 * fils à partir de la génération, on choisit des parents, on génère deux
+			 * fils à partir de crossover, on leur applique des mutations avec la
+			 * probabilité proba_Mutation et on les choisit pour la nouvelle génération
+			 * si leur fitness est meilleur que les parents.
+			 */
+			ArrayList<Solution> parents = this.choisir_Parents();
+			ArrayList<Solution> offsprings = this.MPX(parents);
+			for(Solution o : offsprings) {
+				if(isElligible(o, parents, lambda)) offsprings_Elligibles.add(o);
+				else offsprings_Rejetes.add(o);
+			}
+			i+=2;
+		}
+		if(offsprings_Elligibles.size()<Success_Ratio*this.getTaille_Monde()) System.err.println("Convergence prématurée");
+		/*
+		 * On remplit la nouvelle génération avec les elligibles et 
+		 * (this.getTaille_Monde()-offsprings_Elligibles.size()) non elligibles
+		 */
+		ArrayList<Solution> new_Gen = new ArrayList<Solution>();
+		new_Gen.addAll(offsprings_Elligibles);
+		for(int j=0;j<this.getTaille_Monde()-offsprings_Elligibles.size();j++) {
+			new_Gen.add(offsprings_Rejetes.get(j));
+		}
+		
+		return new_Gen;
+	}
+
+	@Override
+	public Solution solve(Solution sol) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
