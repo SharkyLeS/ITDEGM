@@ -84,14 +84,15 @@ public class TSPSolver {
 		Solution solutionIni = ini.getSolution();
 		
 		Runnable[] solvers = new Runnable[4];
-		solvers[0] = new ThreadPerso(new GA(m_instance,100));
+		solvers[0] = new ThreadPerso(new GA(m_instance,100,this.getTimeLimit()));
 		//solvers[1] = new ThreadPerso
 		//solvers[2] =
 		//solvers[3] =
 		ExecutorService exe = Executors.newFixedThreadPool(4);
-		for (int i=0; i<4; i++) {
+		/*for (int i=0; i<4; i++) {
 			exe.execute(solvers[i]);
-		}
+		}*/
+		exe.execute(solvers[0]);
 		
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;

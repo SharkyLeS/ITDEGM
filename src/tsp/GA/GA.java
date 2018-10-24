@@ -11,7 +11,6 @@ public class GA extends AMetaheuristic{
 	// (doit donc faire taille_monde)
 	private int taille_Monde;
 	private long timeLimit;
-	private Instance m_instance;
 	// Prportion de la population qui doit être renouvelée dans génération suivante
 	public static final double Success_Ratio = 0.6;
 	// Nombre maximal de fils à générer à chaque itération pour créer gén suivante
