@@ -8,6 +8,7 @@ import tsp.metaheuristic.AMetaheuristic;
 
 public class AntAlgorithm extends AMetaheuristic {
 
+	public static final boolean trace = false;
 	public static final double alpha = 2.0; //pondere les phéromones A DEFINIR
 	public static final double beta = 3.0; //pondere la visibilité
 	public static final double rho = 0.9; // doit être entre 0 et 1
@@ -19,7 +20,6 @@ public class AntAlgorithm extends AMetaheuristic {
 	private double[][] visibilite; // à voir si on garde
 	private double[][] pheromones; // les tau (i,j)
 	private ArrayList<Integer> villesRestantes; // pourquoi pas mettre dans solve, c'est pareil
-	
 	
 	
 	public AntAlgorithm(Instance instance, String name) throws Exception {
