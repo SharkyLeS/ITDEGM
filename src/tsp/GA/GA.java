@@ -7,7 +7,7 @@ import tsp.metaheuristic.AMetaheuristic;
 public class GA extends AMetaheuristic{
 
 	private ArrayList<Solution> monde_solutions;
-	private ArrayList<Long> fitness; // Mémorise le coût de chacune des solutions 
+	private ArrayList<Double> fitness; // Mémorise le coût de chacune des solutions 
 	// (doit donc faire taille_monde)
 	private int taille_Monde;
 	private long timeLimit;
@@ -17,19 +17,21 @@ public class GA extends AMetaheuristic{
 	public static final double Max_Selection_Pressure = 30;
 	public static final double Proba_Mutation = 0.15;
 	
-	public GA(Instance i, int taille, long timeLimit) throws Exception {
+	public GA(Solution ini, Instance i, int taille, long timeLimit) throws Exception {
 		super(i,"Genetic Algorithm");
 		taille_Monde=taille;
 		ArrayList<Solution> m = new ArrayList<Solution>();
-		ArrayList<Long> f = new ArrayList<Long>();
-		for(int j=0;j<taille_Monde;j++) {
-			Solution s = new Solution(m_instance);
+		m.add(ini);
+		ArrayList<Double> f = new ArrayList<Double>();
+		for(int j=1;j<taille_Monde;j++) {
+			Solution s = this.mutation(ini);
+			//s.print(System.err);
 			m.add(s);   // Remplacer par les solutions obtenues par calcul du plusProcheVoisin sur différentes villes
-			// Par conséquent, il est nécesaire que taille_monde<=m_instance.getNbCities()
-			f.add(1/s.getObjectiveValue());  // on associe à chaque solution sa "fitness" = 1/son coût --> on cherche à trouver la soltuion de plus grande fitness
+			f.add(1/s.evaluate());  // on associe à chaque solution sa "fitness" = 1/son coût --> on cherche à trouver la soltuion de plus grande fitness
 		}
-		monde_solutions=m;
+		this.monde_solutions=m;
 		this.timeLimit=timeLimit;
+		this.fitness = f;
 	}
 
 	public GA(Instance i, int taille, ArrayList<Solution> monde, long timeLimit) throws Exception {
@@ -68,11 +70,11 @@ public class GA extends AMetaheuristic{
 		this.m_instance = m_instance;
 	}
 	
-	public ArrayList<Long> getFitness() {
+	public ArrayList<Double> getFitness() {
 		return fitness;
 	}
 
-	public void setFitness(ArrayList<Long> fitness) {
+	public void setFitness(ArrayList<Double> fitness) {
 		this.fitness = fitness;
 	}
 	

@@ -84,7 +84,7 @@ public class TSPSolver {
 		Solution solutionIni = ini.getSolution();
 		
 		Runnable[] solvers = new Runnable[4];
-		solvers[0] = new ThreadPerso(new GA(m_instance,100,this.getTimeLimit()));
+		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()));
 		//solvers[1] = new ThreadPerso
 		//solvers[2] =
 		//solvers[3] =
