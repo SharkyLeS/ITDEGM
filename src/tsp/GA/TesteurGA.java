@@ -1,6 +1,7 @@
 package tsp.GA;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import tsp.Instance;
 import tsp.PlusProchesVoisins;
@@ -92,6 +93,61 @@ public class TesteurGA {
 		premier_GA.getMonde_solutions().get(premier_GA.getTaille_Monde()-1).print(System.err);
 		*/
 		
+		// Test getProba()
+		
+		 /* for(Solution s : premier_GA.getMonde_solutions()) {
+			s.print(System.err);
+			System.err.println("Probabilité d'apparition de cette solution dans la génération suivante : "+premier_GA.getProba(s));
+		  }
+		  */
+		/* Attention, probas très proches : pour une instance à 10 ville,
+		 * une solution de coût 177 a une proba de 0.112826 lorsqu'une de coût 230 a 
+		 * une proba de 0.086827.
+		 * EIL51 avec taillePop=30 : objectiveValue = 720/proba=0.0276
+		 * 							 objectiveValue = 543/proba=0.0367 ...
+		 */
+		
+		
+		// Test choisirParents()
+		
+		/*
+			for(int j=0;j<taille_Monde;j++) {
+			ArrayList<Solution> parents = premier_GA.choisir_Parents();
+			System.err.println("Parent 1 :");
+			parents.get(0).print(System.err);
+			System.err.println("Parent 2 :");
+			parents.get(1).print(System.err);
+		}
+		*/
+		// Attention, renvoie souvent deux solutions ayant juste subi une mutation
+		
+		// Test Crossover MPX
+		
+		/*
+		ArrayList<Solution> parents = premier_GA.choisir_Parents();
+		ArrayList<Solution> enfants=premier_GA.MPX(parents);
+		parents.get(0).print(System.err);
+		parents.get(1).print(System.err);
+		enfants.get(0).print(System.err);
+		enfants.get(1).print(System.err);
+		*/
+		
+		// Test isElligible()
+		
+		/*
+		ArrayList<Solution> parents = premier_GA.choisir_Parents();
+		ArrayList<Solution> enfants=premier_GA.MPX(parents);
+		parents.get(0).print(System.err);
+		parents.get(1).print(System.err);
+		enfants.get(0).print(System.err);
+		System.err.println("Solution admissible " + enfants.get(0).isFeasible());
+		System.err.println("Solution elligible "  + premier_GA.isElligible(enfants.get(0), parents, 0));
+		System.err.println(enfants.get(0).evaluate());
+		enfants.get(1).print(System.err);
+		System.err.println("Solution admissible " + enfants.get(1).isFeasible());
+		System.err.println("Solution elligible " + premier_GA.isElligible(enfants.get(1), parents, 0));
+		System.err.println(enfants.get(1).evaluate());
+		*/
 		
 		}
 	}

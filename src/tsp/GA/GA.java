@@ -104,15 +104,16 @@ public class GA extends AMetaheuristic{
 	public ArrayList<Solution> choisir_Parents() throws Exception {
 		ArrayList<Solution> parents = new ArrayList<Solution>();
 		ArrayList<Solution> occurences = new ArrayList<Solution>();
+		int precision_Proba = 1000; // 1000 car grande précision nécessaire dûe aux probas très petites
 		// On crée une liste occurences ou on fera apparaitre chaque solution un nombre de fois proportionnel à sa probabilité
 		for(Solution s : getMonde_solutions()) {
-			int n = (int)(getProba(s)*100);
+			int n = (int)(getProba(s)*precision_Proba);
 			for(int i=0;i<n;i++) occurences.add(s);
 		}
 		// On tire au hasard deux parents parmis la population
-		int p1 = (int)(Math.random()*100);
+		int p1 = (int)(Math.random()*precision_Proba);
 		parents.add(occurences.get(p1));
-		int p2 = (int)(Math.random()*100);
+		int p2 = (int)(Math.random()*precision_Proba);
 		parents.add(occurences.get(p2));
 		return parents;
 	}
@@ -167,8 +168,9 @@ public class GA extends AMetaheuristic{
 				
 				// On cherche les villes du parent 2 (en parcourant dans l'ordre) qui n'ont pas encore été répliquées dans le premier enfant
 				while((city1<nb_Cities)&&(!trouve1)) {
-					if(!cities2.contains(parents.get(1).getCity(city1))) {
+					if(!cities1.contains(parents.get(1).getCity(city1))) {
 						o1.setCityPosition(parents.get(1).getCity(city1), i);
+						cities1.add(parents.get(1).getCity(city1));
 						trouve1=true;
 					}
 					city1++;
@@ -179,8 +181,9 @@ public class GA extends AMetaheuristic{
 				boolean trouve2=false;
 				
 				while((city2<nb_Cities)&&(!trouve2)) {
-					if(!cities1.contains(parents.get(0).getCity(city2))) {
+					if(!cities2.contains(parents.get(0).getCity(city2))) {
 						o2.setCityPosition(parents.get(0).getCity(city2), i);
+						cities2.add(parents.get(0).getCity(city2));
 						trouve2=true;
 					}
 					city2++;
@@ -193,16 +196,16 @@ public class GA extends AMetaheuristic{
 	}
 	
 	/*
-	 * Retourne true si le fils o à un coût inférieur ou égal à ses parents, false sinon
+	 * Retourne true si le fils o a un coût inférieur ou égal à ses parents, false sinon
 	 */
-	public boolean isElligible(Solution o, ArrayList<Solution> parents, double lambda) {
+	public boolean isElligible(Solution o, ArrayList<Solution> parents, double lambda) throws Exception {
 		double objective_fitness = 0;
-		double p1_fitness = 1/parents.get(0).getObjectiveValue();
-		double p2_fitness = 1/parents.get(1).getObjectiveValue();
+		double p1_fitness = parents.get(0).evaluate();
+		double p2_fitness = parents.get(1).evaluate();
 		// On codera lambda croissant graduellement de 0 à 1 
-		if(p1_fitness>=p2_fitness) objective_fitness = (1-lambda)*p2_fitness + lambda*p1_fitness;
-		else objective_fitness = (1-lambda)*p1_fitness + lambda*p2_fitness;
-		return (1/o.getObjectiveValue())<=objective_fitness;
+		if(p1_fitness>=p2_fitness) objective_fitness = (1-lambda)*p1_fitness + lambda*p2_fitness;
+		else objective_fitness = (1-lambda)*p2_fitness + lambda*p1_fitness;
+		return o.evaluate()<=objective_fitness;
 	}
 	
 	/*
@@ -228,6 +231,7 @@ public class GA extends AMetaheuristic{
 				if(p<=Proba_Mutation) o = this.mutation(o);
 				if(isElligible(o, parents, lambda)) offsprings_Elligibles.add(o);
 				else offsprings_Rejetes.add(o);
+				lambda+=2*getTaux_Lambda();
 			}
 			i+=2;
 		}
