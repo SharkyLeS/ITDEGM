@@ -82,12 +82,17 @@ public class TesteurGA {
 		/* for(Solution s : premier_GA.getMonde_solutions()) {
 			s.print(System.err);
 		}
-		// erreur : toutes les solutions sont identiques dans Monde_Solutions() .. 
-		System.err.println(premier_GA.getTaille_Monde());
+		System.err.print(premier_GA.getMonde_solutions().size());
+		*/
+		
+		// Test addSolution()
+		/*System.err.println(premier_GA.getTaille_Monde());
 		premier_GA.addSolution_Monde(solutionIni);
 		System.err.println(premier_GA.getTaille_Monde());
 		premier_GA.getMonde_solutions().get(premier_GA.getTaille_Monde()-1).print(System.err);
 		*/
+		
+		
 		}
 	}
 

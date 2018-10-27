@@ -122,13 +122,14 @@ public class GA extends AMetaheuristic{
 	 */
 	public Solution mutation(Solution s) throws Exception {
 		// Attention tout de même à ne pas changer la ville de départ/arrivée
+		Solution sol = s.copy();
 		int p1 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
 		int p2 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
-		int v1 = s.getCity(p1);
-		int v2 = s.getCity(p2);
-		s.setCityPosition(v1, p2);
-		s.setCityPosition(v2, p1);
-		return s;
+		int v1 = sol.getCity(p1);
+		int v2 = sol.getCity(p2);
+		sol.setCityPosition(v1, p2);
+		sol.setCityPosition(v2, p1);
+		return sol;
 	}
 	
 	/*
