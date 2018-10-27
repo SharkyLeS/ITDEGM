@@ -12,6 +12,10 @@ public class ThreadPerso implements Runnable {
 		//this.ini = PlusProcheVoisin
 	}
 	
+	public ThreadPerso(AMetaheuristic AMeta, Solution sol) {
+		this.AM=AMeta;
+		this.ini=sol;
+	}
 	
 	public void run() {
 		try {

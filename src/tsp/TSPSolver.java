@@ -84,7 +84,7 @@ public class TSPSolver {
 		Solution solutionIni = ini.getSolution();
 		
 		Runnable[] solvers = new Runnable[4];
-		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()));
+		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),solutionIni);
 		//solvers[1] = new ThreadPerso
 		//solvers[2] =
 		//solvers[3] =
@@ -97,6 +97,7 @@ public class TSPSolver {
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
 		
+		/*
 		// INITIALISATION FOURMIS
 		Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
 		int i = 2;
@@ -119,6 +120,7 @@ public class TSPSolver {
 			i=i%(m_instance.getNbCities());
 			
 		} while ((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities())&&(NbCycles<100));
+		*/
 		/* 
 			int i=1;
 			ArrayList<Integer> idRestants = new ArrayList<Integer>();
