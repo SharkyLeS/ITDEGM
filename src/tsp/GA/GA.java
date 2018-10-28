@@ -14,6 +14,7 @@ public class GA extends AMetaheuristic{
 	// Prportion de la population qui doit être renouvelée dans génération suivante
 	public static final double Success_Ratio = 0.6;
 	// Nombre maximal de fils à générer à chaque itération pour créer gén suivante
+	// (Multiple de la taille de la population)
 	public static final double Max_Selection_Pressure = 30;
 	public static final double Proba_Mutation = 0.15;
 	
@@ -81,9 +82,12 @@ public class GA extends AMetaheuristic{
 	/*
 	 * Représente la valeur de l'incrément de lambda à chaque itération 
 	 * Permet à lambda de croître graduellement de 0 à 1
+	 * 
+	 * Valeur à choisir précisemment (y reréflechir)
 	 */
 	public double getTaux_Lambda() {
-		return 1/(this.getTaille_Monde()*Max_Selection_Pressure);
+		//return 1/(this.getTaille_Monde()*Max_Selection_Pressure);
+		return 1/this.getTaille_Monde(); // Valeur pour tests
 	}
 	
 	/*
@@ -104,7 +108,7 @@ public class GA extends AMetaheuristic{
 	public ArrayList<Solution> choisir_Parents() throws Exception {
 		ArrayList<Solution> parents = new ArrayList<Solution>();
 		ArrayList<Solution> occurences = new ArrayList<Solution>();
-		int precision_Proba = 1000; // 1000 car grande précision nécessaire dûe aux probas très petites
+		int precision_Proba = (int) 1e6; // Très grande précision nécessaire dûe aux probas très petites
 		// On crée une liste occurences ou on fera apparaitre chaque solution un nombre de fois proportionnel à sa probabilité
 		for(Solution s : getMonde_solutions()) {
 			int n = (int)(getProba(s)*precision_Proba);
@@ -212,17 +216,16 @@ public class GA extends AMetaheuristic{
 	 * On code ici tout le processus de séléction de la génération suivante, en faisant appel aux autres méthodes de la classe
 	 * Retourne une nouvelle génération
 	 */
-	public ArrayList<Solution> offspring_Selection() throws Exception{
+	public ArrayList<Solution> offspring_Selection(double lambda) throws Exception{
 		int i=0;
 		ArrayList<Solution> offsprings_Elligibles = new ArrayList<Solution>();
 		ArrayList<Solution> offsprings_Rejetes = new ArrayList<Solution>();
-		double lambda = 0.0;
-		while((offsprings_Elligibles.size()<=Success_Ratio*this.getTaille_Monde())&&(i<Max_Selection_Pressure)) {
+		while((offsprings_Elligibles.size()<=Success_Ratio*this.getTaille_Monde())&&(i<Max_Selection_Pressure*this.getTaille_Monde())) {
 			/* Tant que l'on a pas géneré Success_Ratio*this.getTaille_Monde()
-			 * fils à partir de la génération, on choisit des parents, on génère deux
-			 * fils à partir de crossover, on leur applique des mutations avec la
+			 * fils valables à partir de la génération, on choisit des parents, on génère
+			 * deux fils à partir de crossover, on leur applique des mutations avec la
 			 * probabilité proba_Mutation et on les choisit pour la nouvelle génération
-			 * si leur fitness est meilleur que les parents.
+			 * si leur coût est meilleur que les parents.
 			 */
 			ArrayList<Solution> parents = this.choisir_Parents();
 			ArrayList<Solution> offsprings = this.MPX(parents);
@@ -231,18 +234,17 @@ public class GA extends AMetaheuristic{
 				if(p<=Proba_Mutation) o = this.mutation(o);
 				if(isElligible(o, parents, lambda)) offsprings_Elligibles.add(o);
 				else offsprings_Rejetes.add(o);
-				lambda+=2*getTaux_Lambda();
 			}
 			i+=2;
 		}
 		if(offsprings_Elligibles.size()<Success_Ratio*this.getTaille_Monde()) System.err.println("Convergence prématurée");
 		/*
 		 * On remplit la nouvelle génération avec les elligibles et 
-		 * (this.getTaille_Monde()-offsprings_Elligibles.size()) non elligibles
+		 * (i-offsprings_Elligibles.size()) non elligibles
 		 */
 		ArrayList<Solution> new_Gen = new ArrayList<Solution>();
 		new_Gen.addAll(offsprings_Elligibles);
-		for(int j=0;j<this.getTaille_Monde()-offsprings_Elligibles.size();j++) {
+		for(int j=0;j<i-offsprings_Elligibles.size();j++) {
 			new_Gen.add(offsprings_Rejetes.get(j));
 		}
 		
@@ -251,36 +253,34 @@ public class GA extends AMetaheuristic{
 
 	@Override
 	public Solution solve(Solution sol, long time) throws Exception {
-		/* On crée un premier monde de solutions par mutations a partir de la solution 
-		 * sol obtenue par les plus proches voisins.
-		 */
-		this.addSolution_Monde(sol);
-		for(int i=0;i<getTaille_Monde()-1;i++) {
-			this.addSolution_Monde(this.mutation(sol));
-		}
-		
 		/*
 		 * On fait GA tant que timeLimit n'a pas été atteint.
 		 */
+		double lambda =0;
 		long startTime = System.currentTimeMillis();
 		long spentTime=0;
 		while(spentTime<getTimeLimit()*1000-100) {
-			this.setMonde_solutions(this.offspring_Selection());
+			this.setMonde_solutions(this.offspring_Selection(lambda));
 			spentTime = System.currentTimeMillis()-startTime;
+			lambda += this.getTaux_Lambda();
 		}
-		
-		Solution opti=this.getMonde_solutions().get(0);
-		long best_sol = this.getMonde_solutions().get(0).getObjectiveValue();
-		for(Solution s : this.getMonde_solutions()) {
-			if(s.getObjectiveValue()<=best_sol) {
-				opti=s;
-				best_sol=s.getObjectiveValue();
-			}
-		}
-		return opti;
+		return this.trouveOptimum();
 	}
 
 	public long getTimeLimit() {
 		return timeLimit;
+	}
+	
+	// Choisis la solution de moindre coût dans le monde
+	public Solution trouveOptimum() throws Exception {
+		Solution opti=this.getMonde_solutions().get(0);
+		double best_sol = this.getMonde_solutions().get(0).evaluate();
+		for(Solution s : this.getMonde_solutions()) {
+			if(s.evaluate()<=best_sol) {
+				opti=s;
+				best_sol=s.evaluate();
+			}
+		}
+		return opti;
 	}
 }

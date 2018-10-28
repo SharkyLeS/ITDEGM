@@ -65,11 +65,12 @@ public class TesteurGA {
 		}
 		
 		// Initialisation paramètres test
+		double lambda = 0;
 		Instance i = new Instance(filename, typeInstance);
 		AHeuristic ini = (new PlusProchesVoisins(i,"PlusProchesVoisins",max_time));
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
-		int taille_Monde = 10;
+		int taille_Monde = 20;
 		
 		solutionIni.print(System.err);
 		GA premier_GA = new GA(solutionIni, i, taille_Monde, max_time);
@@ -135,21 +136,57 @@ public class TesteurGA {
 		// Test isElligible()
 		
 		/*
-		ArrayList<Solution> parents = premier_GA.choisir_Parents();
-		ArrayList<Solution> enfants=premier_GA.MPX(parents);
-		parents.get(0).print(System.err);
-		parents.get(1).print(System.err);
-		enfants.get(0).print(System.err);
-		System.err.println("Solution admissible " + enfants.get(0).isFeasible());
-		System.err.println("Solution elligible "  + premier_GA.isElligible(enfants.get(0), parents, 0));
-		System.err.println(enfants.get(0).evaluate());
-		enfants.get(1).print(System.err);
-		System.err.println("Solution admissible " + enfants.get(1).isFeasible());
-		System.err.println("Solution elligible " + premier_GA.isElligible(enfants.get(1), parents, 0));
-		System.err.println(enfants.get(1).evaluate());
+		for(int j=0;j<10;j++) {
+			ArrayList<Solution> parents = premier_GA.choisir_Parents();
+			ArrayList<Solution> enfants=premier_GA.MPX(parents);
+			parents.get(0).print(System.err);
+			parents.get(1).print(System.err);
+			enfants.get(0).print(System.err);
+			System.err.println("Solution admissible " + enfants.get(0).isFeasible());
+			System.err.println("Solution elligible "  + premier_GA.isElligible(enfants.get(0), parents, 0));
+			System.err.println(enfants.get(0).evaluate());
+			enfants.get(1).print(System.err);
+			System.err.println("Solution admissible " + enfants.get(1).isFeasible());
+			System.err.println("Solution elligible " + premier_GA.isElligible(enfants.get(1), parents, 0));
+			System.err.println(enfants.get(1).evaluate());
+		}
 		*/
 		
+		// Test offspringSelection
+		
+		/*
+		long startTime = System.currentTimeMillis();
+		int nb_Generations = 100;
+		for(int j=0; j<nb_Generations; j++) {
+			premier_GA.setMonde_solutions(premier_GA.offspring_Selection(lambda));
+		
+			Solution opti=premier_GA.getMonde_solutions().get(0);
+			double best_sol = premier_GA.getMonde_solutions().get(0).evaluate();
+			for(Solution s : premier_GA.getMonde_solutions()) {
+				if(s.evaluate()<=best_sol) {
+					opti=s;
+					best_sol=s.evaluate();
+				}
+			}
+			opti.print(System.err);
+			lambda += 1/nb_Generations;
 		}
+		System.err.println(System.currentTimeMillis()-startTime);
+		*/
+		
+		//Problème : maximise au lieu de miniser le coût .. ^^
+		
+		
+		// Test trouveOptimum()
+		
+		/*
+		for(Solution s : premier_GA.getMonde_solutions()) {
+			s.print(System.err);
+		  }
+		premier_GA.trouveOptimum().print(System.err);
+		*/
+		
+	}
 	}
 
 
