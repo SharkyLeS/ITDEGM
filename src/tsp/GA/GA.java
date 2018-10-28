@@ -266,8 +266,23 @@ public class GA extends AMetaheuristic{
 		 */
 		ArrayList<Solution> new_Gen = new ArrayList<Solution>();
 		new_Gen.addAll(offsprings_Elligibles);
-		for(int j=0;j<this.getTaille_Monde()-offsprings_Elligibles.size();j++) {
-			new_Gen.add(offsprings_Rejetes.get(j));
+		if((1-Success_Ratio)*this.getTaille_Monde()<offsprings_Rejetes.size()) {
+			new_Gen.addAll(offsprings_Rejetes);
+			int manquants = this.getTaille_Monde()-new_Gen.size();
+			// On remplit la génération avec des membres randoms de la précédente
+			while(manquants>0){
+				for(Solution s : this.getMonde_solutions()) {
+					if(!new_Gen.contains(s)) {
+						new_Gen.add(s);
+						manquants--;
+					}
+				}
+			}
+		}
+		else {
+			for(int j=0;j<(1-Success_Ratio)*this.getTaille_Monde();j++) {
+				new_Gen.add(offsprings_Rejetes.get(j));
+			}
 		}
 		
 		return new_Gen;

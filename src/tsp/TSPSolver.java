@@ -82,8 +82,8 @@ public class TSPSolver {
 	 */
 	public void solve() throws Exception
 	{
-		boolean GA = false;
-		boolean ant = true;
+		boolean GA = true;
+		boolean ant = false;
 		boolean thread3 = false;
 		boolean thread4 = false;
 		
