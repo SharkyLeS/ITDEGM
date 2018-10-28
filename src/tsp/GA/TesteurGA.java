@@ -65,7 +65,7 @@ public class TesteurGA {
 		}
 		
 		// Initialisation paramètres test
-		double lambda = 0;
+		double lambda = 1;
 		Instance i = new Instance(filename, typeInstance);
 		AHeuristic ini = (new PlusProchesVoisins(i,"PlusProchesVoisins",max_time));
 		ini.solve();
@@ -154,11 +154,11 @@ public class TesteurGA {
 		
 		// Test offspringSelection
 		
-		/*
+		
 		long startTime = System.currentTimeMillis();
 		int nb_Generations = 100;
 		for(int j=0; j<nb_Generations; j++) {
-			premier_GA.setMonde_solutions(premier_GA.offspring_Selection(lambda));
+			premier_GA.setMonde_solutions(premier_GA.offspring_Selection(1));
 		
 			Solution opti=premier_GA.getMonde_solutions().get(0);
 			double best_sol = premier_GA.getMonde_solutions().get(0).evaluate();
@@ -169,10 +169,10 @@ public class TesteurGA {
 				}
 			}
 			opti.print(System.err);
-			lambda += 1/nb_Generations;
+			//lambda += 1/nb_Generations;
 		}
 		System.err.println(System.currentTimeMillis()-startTime);
-		*/
+		
 		
 		//Problème : maximise au lieu de miniser le coût .. ^^
 		

@@ -12,10 +12,10 @@ public class GA extends AMetaheuristic{
 	private int taille_Monde;
 	private long timeLimit;
 	// Prportion de la population qui doit être renouvelée dans génération suivante
-	public static final double Success_Ratio = 0.6;
+	public static final double Success_Ratio = 0.9;
 	// Nombre maximal de fils à générer à chaque itération pour créer gén suivante
 	// (Multiple de la taille de la population)
-	public static final double Max_Selection_Pressure = 30;
+	public static final double Max_Selection_Pressure = 25;
 	public static final double Proba_Mutation = 0.15;
 	
 	public GA(Solution ini, Instance i, int taille, long timeLimit) throws Exception {
@@ -53,6 +53,7 @@ public class GA extends AMetaheuristic{
 
 	public void setMonde_solutions(ArrayList<Solution> monde_solutions) {
 		this.monde_solutions = monde_solutions;
+		this.setTaille_Monde(monde_solutions.size());
 	}
 
 	public int getTaille_Monde() {
@@ -104,6 +105,8 @@ public class GA extends AMetaheuristic{
 	/*
 	 *  Choisis 2 parents au sein du monde en fonction de leurs coûts (ceux de coût élevé ont moins de chance d'être choisis comme parents)
 	 *  D'autres implémentations sont envisageables pour comparer les performances
+	 *  
+	 *  Algorithme coûteux à cause de precision_Proba très grande 
 	 */
 	public ArrayList<Solution> choisir_Parents() throws Exception {
 		ArrayList<Solution> parents = new ArrayList<Solution>();
@@ -121,6 +124,25 @@ public class GA extends AMetaheuristic{
 		parents.add(occurences.get(p2));
 		return parents;
 	}
+	
+	/*
+	 * Autre implémentation de choix des parents dans une population.
+	 * On implémente ici la sélection par "tournoi" : on choisit à chaque fois deux
+	 * membres au hasard que l'on compare en choisissant celui de coût moindre.
+	 */
+	public ArrayList<Solution> choisirParentsTournoi() throws Exception{
+		ArrayList<Solution> parents = new ArrayList<Solution>();
+		for(int i=0;i<2;i++) {
+			int i1 = 1+(int)(Math.random()*(this.getTaille_Monde()-1));
+			int i2 = 1+(int)(Math.random()*(this.getTaille_Monde()-1));
+			Solution p1 = this.getMonde_solutions().get(i1);
+			Solution p2 = this.getMonde_solutions().get(i2);
+			if(p1.evaluate()<=p2.evaluate()) parents.add(p1);
+			else parents.add(p2);
+		}
+		return parents;
+	}
+	
 	
 	/*
 	 * Tire aléatoirement deux villes de la solution et les échange.
@@ -220,14 +242,14 @@ public class GA extends AMetaheuristic{
 		int i=0;
 		ArrayList<Solution> offsprings_Elligibles = new ArrayList<Solution>();
 		ArrayList<Solution> offsprings_Rejetes = new ArrayList<Solution>();
-		while((offsprings_Elligibles.size()<=Success_Ratio*this.getTaille_Monde())&&(i<Max_Selection_Pressure*this.getTaille_Monde())) {
+		while((offsprings_Elligibles.size()<=Success_Ratio*this.getTaille_Monde())&&(i<=Max_Selection_Pressure*this.getTaille_Monde())) {
 			/* Tant que l'on a pas géneré Success_Ratio*this.getTaille_Monde()
 			 * fils valables à partir de la génération, on choisit des parents, on génère
 			 * deux fils à partir de crossover, on leur applique des mutations avec la
 			 * probabilité proba_Mutation et on les choisit pour la nouvelle génération
 			 * si leur coût est meilleur que les parents.
 			 */
-			ArrayList<Solution> parents = this.choisir_Parents();
+			ArrayList<Solution> parents = this.choisirParentsTournoi();
 			ArrayList<Solution> offsprings = this.MPX(parents);
 			for(Solution o : offsprings) {
 				double p = Math.random();
