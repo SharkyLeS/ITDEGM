@@ -65,12 +65,12 @@ public class TesteurGA {
 		}
 		
 		// Initialisation paramètres test
-		double lambda = 1;
+		double lambda = 0.8;
 		Instance i = new Instance(filename, typeInstance);
 		AHeuristic ini = (new PlusProchesVoisins(i,"PlusProchesVoisins",max_time));
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
-		int taille_Monde = 20;
+		int taille_Monde = 2000;
 		
 		solutionIni.print(System.err);
 		GA premier_GA = new GA(solutionIni, i, taille_Monde, max_time);
@@ -158,7 +158,9 @@ public class TesteurGA {
 		long startTime = System.currentTimeMillis();
 		int nb_Generations = 100;
 		for(int j=0; j<nb_Generations; j++) {
-			premier_GA.setMonde_solutions(premier_GA.offspring_Selection(1));
+			premier_GA.setMonde_solutions(premier_GA.offspring_Selection(lambda));
+			// System.err.println(premier_GA.getTaille_Monde());
+			// Taille du monde ne fait que d'augmenter !!
 		
 			Solution opti=premier_GA.getMonde_solutions().get(0);
 			double best_sol = premier_GA.getMonde_solutions().get(0).evaluate();
@@ -174,8 +176,6 @@ public class TesteurGA {
 		System.err.println(System.currentTimeMillis()-startTime);
 		
 		
-		//Problème : maximise au lieu de miniser le coût .. ^^
-		
 		
 		// Test trouveOptimum()
 		
@@ -184,6 +184,22 @@ public class TesteurGA {
 			s.print(System.err);
 		  }
 		premier_GA.trouveOptimum().print(System.err);
+		*/
+		
+		
+		// Autres tests
+		
+		/*
+		ArrayList<Integer> test = new ArrayList<Integer>();
+		ArrayList<Integer> test2 = new ArrayList<Integer>();
+		test.add(1);
+		test.add(2);
+		test2.add(3);
+		test2.add(4);
+		test=test2;
+		String res = "[";
+		for(int x : test) res+=x+" ,";
+		System.out.println(res+"]");
 		*/
 		
 	}

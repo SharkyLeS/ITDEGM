@@ -266,7 +266,7 @@ public class GA extends AMetaheuristic{
 		 */
 		ArrayList<Solution> new_Gen = new ArrayList<Solution>();
 		new_Gen.addAll(offsprings_Elligibles);
-		for(int j=0;j<i-offsprings_Elligibles.size();j++) {
+		for(int j=0;j<this.getTaille_Monde()-offsprings_Elligibles.size();j++) {
 			new_Gen.add(offsprings_Rejetes.get(j));
 		}
 		
