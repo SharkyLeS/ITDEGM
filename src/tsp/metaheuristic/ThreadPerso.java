@@ -19,7 +19,7 @@ public class ThreadPerso implements Runnable {
 	
 	public void run() {
 		try {
-			AM.solve(this.ini);
+			AM.solve(this.ini,50000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

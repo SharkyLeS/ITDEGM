@@ -42,7 +42,7 @@ abstract public class AMetaheuristic {
 	// -----------------------------
 
 	/** Apply the metaheuristic on a solution to get a local optimum solution */
-	public abstract Solution solve(Solution sol) throws Exception;
+	public abstract Solution solve(Solution sol, long time) throws Exception;
 	// RAJOUTER LE TEMPS EN ARGUMENT !!!!!!
 
 	// -----------------------------

@@ -250,7 +250,7 @@ public class GA extends AMetaheuristic{
 	}
 
 	@Override
-	public Solution solve(Solution sol) throws Exception {
+	public Solution solve(Solution sol, long time) throws Exception {
 		/* On crée un premier monde de solutions par mutations a partir de la solution 
 		 * sol obtenue par les plus proches voisins.
 		 */

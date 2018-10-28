@@ -79,10 +79,37 @@ public class AntAlgorithm extends AMetaheuristic {
 		}
 	}
 
-	//ChoixVille
-	//getDeltaPheromones
-	//majPheromones
+	public int choixVille(int i, ArrayList<Integer> villesRest) throws Exception {
+		double x = Math.random();
+		double acc = 0;
+		int villeChoisie = -1;
+		for (int j : villesRest) { // amélioration : retirer ici villeChoisie de villesRest
+			if (x<acc+ this.proba[i][j]) {
+				villeChoisie = j;
+				break;
+			} else if (j == villesRest.get(villesRest.size()-1)) {
+				villeChoisie = j;
+				break;
+			} else {
+				acc += this.proba[i][j];
+			}
+		}
+		return villeChoisie;
+	}
 	
+	public double getDeltaPheromones(double longueur) throws Exception { //Max
+		double DeltaPheromones=0;
+		DeltaPheromones=Q/longueur;
+		return DeltaPheromones;
+	}
+	
+	public void majPheromones(Solution s, double longueur) throws Exception {
+		for (int i=0;i<super.getInstance().getNbCities()-1;i++) {
+			this.setPheromones(rho*this.getPheromones(s.getCity(i),s.getCity(i+1))+
+					this.getDeltaPheromones(longueur), s.getCity(i) , s.getCity(i+1));
+			//amélio : ne pas mettre de pheromones sur les derniers arcs ?
+		}		
+	}
 
 	public Solution lanceFourmi(int villeDeDepart) throws Exception {
 		Solution sol = new Solution(super.getInstance());
@@ -94,8 +121,19 @@ public class AntAlgorithm extends AMetaheuristic {
 			if (i!=villeDeDepart) villesRestantes.add(i);
 		}
 		// Boucle
-		
-		
+		int i = villeDeDepart;
+		for(int position=1 ; position<super.getInstance().getNbCities();position++) {
+			majProba(i,villesRestantes);
+			i = choixVille(i,villesRestantes);
+			sol.setCityPosition(i, position);
+			for(int j=0;j<villesRestantes.size();j++) { //retire i de villesRestantes
+				if(villesRestantes.get(j)==i) {
+					villesRestantes.remove(j);
+					break;
+				}
+			}
+		}
+		majPheromones(sol,sol.evaluate());
 		return sol;
 	}
 	
@@ -103,11 +141,21 @@ public class AntAlgorithm extends AMetaheuristic {
 		return lanceFourmi(0);
 	}
 
-	public Solution solve(Solution sol) throws Exception {
-		double meilleurDistance = sol.evaluate(); /*boucle présente ici, donc on mettre à jour 
-		meilleurDistance si une meilleure solution est trouvée 
-		Il va y avoir ici "Solution solActuelle = new Solution(instance)*/
-		return null;
+	public Solution solve(Solution sol,long time) throws Exception {
+		long startTime = System.currentTimeMillis();
+		long spentTime = 0;
+		
+		int i=0;
+		Solution solActuelle;
+		while (spentTime<time) {
+			solActuelle = lanceFourmi(i);
+			if (solActuelle.getObjectiveValue()<sol.getObjectiveValue()) {
+				sol = solActuelle.copy();
+			}
+			spentTime = System.currentTimeMillis() - startTime;
+			i++;
+		}
+		return sol;
 	}
 
 }
