@@ -78,13 +78,16 @@ public class TSPSolver {
 	 */
 	public void solve() throws Exception
 	{
+		long startTime = System.currentTimeMillis();
+		
 		m_solution.print(System.err);
 		AHeuristic ini = (new PlusProchesVoisins(m_instance,"PlusProchesVoisins",m_timeLimit));
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
 		
 		Runnable[] solvers = new Runnable[4];
-		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),solutionIni);
+		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),
+				solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
 		//solvers[1] = new ThreadPerso
 		//solvers[2] =
 		//solvers[3] =
@@ -94,9 +97,11 @@ public class TSPSolver {
 		}*/
 		exe.execute(solvers[0]);
 		
-		long startTime = System.currentTimeMillis();
-		long spentTime = 0;
 		
+		
+		
+		
+		exe.shutdown();
 		/*
 		// INITIALISATION FOURMIS
 		Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
