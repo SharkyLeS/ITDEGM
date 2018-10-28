@@ -1,8 +1,10 @@
 package tsp.metaheuristic;
 
+import java.util.concurrent.Callable;
+
 import tsp.Solution;
 
-public class ThreadPerso implements Runnable {
+public class ThreadPerso implements Callable {
 	
 	private AMetaheuristic AM;
 	private Solution ini;
@@ -25,6 +27,7 @@ public class ThreadPerso implements Runnable {
 		try {
 			Solution s = AM.solve(this.ini, timeLimit-time);
 			ini = s.copy();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -32,6 +35,16 @@ public class ThreadPerso implements Runnable {
 	
 	public Solution getSolution() {
 		return this.ini;
+	}
+
+	public Solution call() throws Exception {
+		try {
+			Solution s = AM.solve(this.ini, timeLimit-time);
+			return s;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

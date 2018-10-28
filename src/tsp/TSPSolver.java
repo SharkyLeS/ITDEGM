@@ -1,9 +1,12 @@
 package tsp;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import tsp.AntColony.AntAlgorithm;
 import tsp.GA.GA;
 import tsp.heuristic.AHeuristic;
 import tsp.metaheuristic.AMetaheuristic;
@@ -52,6 +55,7 @@ public class TSPSolver {
 	 * @param instance the instance of the problem
 	 * @param timeLimit the time limit in seconds
 	 */
+	
 	public TSPSolver(Instance instance, long timeLimit) {
 		m_instance = instance;
 		m_solution = new Solution(m_instance);
@@ -78,6 +82,11 @@ public class TSPSolver {
 	 */
 	public void solve() throws Exception
 	{
+		boolean GA = false;
+		boolean ant = true;
+		boolean thread3 = false;
+		boolean thread4 = false;
+		
 		long startTime = System.currentTimeMillis();
 		
 		m_solution.print(System.err);
@@ -85,23 +94,42 @@ public class TSPSolver {
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
 		
-		Runnable[] solvers = new Runnable[4];
-		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),
+		Callable[] solvers = new Callable[2];
+		if (ant) {
+			solvers[0] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
+			solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
+		}
+		if (GA) {
+			solvers[1] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),
 				solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
-		//solvers[1] = new ThreadPerso
-		//solvers[2] =
-		//solvers[3] =
-		ExecutorService exe = Executors.newFixedThreadPool(4);
-		/*for (int i=0; i<4; i++) {
-			exe.execute(solvers[i]);
+		}/*
+		if (nbThread == 3) {
+			solvers[2] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
+					solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
+		}
+		if (nbThread == 4) {
+			solvers[3] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
+					solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
 		}*/
-		exe.execute(solvers[0]);
+		
+		ExecutorService exe = Executors.newFixedThreadPool(2); 
+				
+		if (ant) {
+			Future<Solution> fut0 = exe.submit(solvers[0]);
+			m_solution = fut0.get();
+		} else if (GA) {
+			Future<Solution> fut1 = exe.submit(solvers[1]);
+			Solution solutionGA = fut1.get();
+		} else if (ant&&GA) {
+			Future<Solution> fut0 = exe.submit(solvers[0]);
+			Future<Solution> fut1 = exe.submit(solvers[1]);
+			m_solution = compareSolution(fut0.get(),fut1.get());
+		}
 		
 		
+		exe.shutdown(); //necessaire ?
 		
-		
-		
-		exe.shutdown();
+	
 		/*
 		// INITIALISATION FOURMIS
 		Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
@@ -194,6 +222,22 @@ public class TSPSolver {
 
 	// METHODES PERSO
 
+	public Solution compareSolution(Solution s1, Solution s2) {
+		if (s1.getObjectiveValue()>s2.getObjectiveValue()) {
+			return s2;
+		} else {
+			return s1;
+		}
+	}
+	
+	public Solution compareSolution(Solution s1, Solution s2, Solution s3) {
+		return compareSolution(s1,compareSolution(s2,s3));
+	}
+	public Solution compareSolution(Solution s1, Solution s2, Solution s3,Solution s4) {
+		return compareSolution(compareSolution(s1,s2),compareSolution(s3,s4));
+	}
+	
+	
 	public int CherchePlusProche(int idCity, ArrayList<Integer> idRestants) throws Exception {
 		if((idCity<0)||(idCity>m_instance.getNbCities()-1)) {
 			throw new Exception("Error : index " + idCity
