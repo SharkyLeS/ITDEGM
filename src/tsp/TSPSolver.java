@@ -124,6 +124,8 @@ public class TSPSolver {
 			Future<Solution> fut0 = exe.submit(solvers[0]);
 			Future<Solution> fut1 = exe.submit(solvers[1]);
 			m_solution = compareSolution(fut0.get(),fut1.get());
+		} else {
+			m_solution = solutionIni;
 		}
 		
 		

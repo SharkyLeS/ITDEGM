@@ -153,7 +153,12 @@ public class AntAlgorithm extends AMetaheuristic {
 				sol = solActuelle.copy();
 			}
 			spentTime = System.currentTimeMillis() - startTime;
-			i++;
+			
+			if (i==super.getInstance().getNbCities()-1) {
+				i=0;
+			} else {
+				i++;
+			}
 		}
 		return sol;
 	}
