@@ -158,8 +158,10 @@ public class TesteurGA {
 		long startTime = System.currentTimeMillis();
 		int nb_Generations = 100;
 		for(int j=0; j<nb_Generations; j++) {
-			premier_GA.setMonde_solutions(premier_GA.offspring_Selection(lambda));
-			// System.err.println(premier_GA.getTaille_Monde());
+			ArrayList<Solution> fils = premier_GA.offspring_Selection(lambda);
+			premier_GA.setMonde_solutions(fils);
+			System.err.println(fils.size());
+			System.err.println(premier_GA.getTaille_Monde());
 			// Taille du monde ne fait que d'augmenter !!
 		
 			Solution opti=premier_GA.getMonde_solutions().get(0);

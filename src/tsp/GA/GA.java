@@ -242,7 +242,7 @@ public class GA extends AMetaheuristic{
 		int i=0;
 		ArrayList<Solution> offsprings_Elligibles = new ArrayList<Solution>();
 		ArrayList<Solution> offsprings_Rejetes = new ArrayList<Solution>();
-		while((offsprings_Elligibles.size()<=Success_Ratio*this.getTaille_Monde())&&(i<=Max_Selection_Pressure*this.getTaille_Monde())) {
+		while((offsprings_Elligibles.size()<Success_Ratio*this.getTaille_Monde())&&(i<Max_Selection_Pressure*this.getTaille_Monde())) {
 			/* Tant que l'on a pas géneré Success_Ratio*this.getTaille_Monde()
 			 * fils valables à partir de la génération, on choisit des parents, on génère
 			 * deux fils à partir de crossover, on leur applique des mutations avec la
@@ -266,7 +266,7 @@ public class GA extends AMetaheuristic{
 		 */
 		ArrayList<Solution> new_Gen = new ArrayList<Solution>();
 		new_Gen.addAll(offsprings_Elligibles);
-		if((1-Success_Ratio)*this.getTaille_Monde()<offsprings_Rejetes.size()) {
+		if(this.getTaille_Monde()-new_Gen.size()>offsprings_Rejetes.size()) {
 			new_Gen.addAll(offsprings_Rejetes);
 			int manquants = this.getTaille_Monde()-new_Gen.size();
 			// On remplit la génération avec des membres randoms de la précédente
@@ -280,7 +280,8 @@ public class GA extends AMetaheuristic{
 			}
 		}
 		else {
-			for(int j=0;j<(1-Success_Ratio)*this.getTaille_Monde();j++) {
+			int n = new_Gen.size();
+			for(int j=0;j<this.getTaille_Monde()-n;j++) {
 				new_Gen.add(offsprings_Rejetes.get(j));
 			}
 		}
