@@ -70,7 +70,7 @@ public class TesteurGA {
 		AHeuristic ini = (new PlusProchesVoisins(i,"PlusProchesVoisins",max_time));
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
-		int taille_Monde = 2000;
+		int taille_Monde = 2000; //2500
 		
 		solutionIni.print(System.err);
 		GA premier_GA = new GA(solutionIni, i, taille_Monde, max_time);
@@ -156,12 +156,12 @@ public class TesteurGA {
 		
 		
 		long startTime = System.currentTimeMillis();
-		int nb_Generations = 100;
+		int nb_Generations = 200; //800
 		for(int j=0; j<nb_Generations; j++) {
 			ArrayList<Solution> fils = premier_GA.offspring_Selection(lambda);
 			premier_GA.setMonde_solutions(fils);
-			System.err.println(fils.size());
-			System.err.println(premier_GA.getTaille_Monde());
+			//System.err.println(fils.size());
+			//System.err.println(premier_GA.getTaille_Monde());
 			// Taille du monde ne fait que d'augmenter !!
 		
 			Solution opti=premier_GA.getMonde_solutions().get(0);

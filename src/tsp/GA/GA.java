@@ -16,7 +16,7 @@ public class GA extends AMetaheuristic{
 	// Nombre maximal de fils à générer à chaque itération pour créer gén suivante
 	// (Multiple de la taille de la population)
 	public static final double Max_Selection_Pressure = 25;
-	public static final double Proba_Mutation = 0.15;
+	public static final double Proba_Mutation = 0.3;
 	
 	public GA(Solution ini, Instance i, int taille, long timeLimit) throws Exception {
 		super(i,"Genetic Algorithm");
