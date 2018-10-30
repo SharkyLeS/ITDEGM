@@ -12,7 +12,7 @@ public class GA extends AMetaheuristic{
 	private int taille_Monde;
 	private long timeLimit;
 	// Prportion de la population qui doit être renouvelée dans génération suivante
-	public static final double Success_Ratio = 0.9;
+	public static final double Success_Ratio = 0.98;
 	// Nombre maximal de fils à générer à chaque itération pour créer gén suivante
 	// (Multiple de la taille de la population)
 	public static final double Max_Selection_Pressure = 25;
@@ -167,10 +167,10 @@ public class GA extends AMetaheuristic{
 	public ArrayList<Solution> MPX(ArrayList<Solution> parents) throws Exception {
 		int coupure = 0;
 		int nb_Cities = parents.get(0).getInstance().getNbCities();
-		if(nb_Cities<=10) coupure=nb_Cities/2;
+		if(nb_Cities<=40) coupure=nb_Cities/2;
 		// On s'affranchit d'un cas de très petite instance par une modélisation basique
 		else {
-			coupure = 10+(int)(Math.random()*(nb_Cities-9));  
+			coupure = 40+(int)(Math.random()*(nb_Cities-39));
 			// On choisit la coupure du crossover telle que : 10<=coupure<=nb_Cities/2
 		}
 		

@@ -120,6 +120,7 @@ public class TSPSolver {
 		} else if (GA) {
 			Future<Solution> fut1 = exe.submit(solvers[1]);
 			Solution solutionGA = fut1.get();
+			m_solution=solutionGA;
 		} else if (ant&&GA) {
 			Future<Solution> fut0 = exe.submit(solvers[0]);
 			Future<Solution> fut1 = exe.submit(solvers[1]);

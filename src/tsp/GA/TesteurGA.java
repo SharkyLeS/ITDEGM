@@ -70,7 +70,7 @@ public class TesteurGA {
 		AHeuristic ini = (new PlusProchesVoisins(i,"PlusProchesVoisins",max_time));
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
-		int taille_Monde = 2000; //2500
+		int taille_Monde = 2500; //2500
 		
 		solutionIni.print(System.err);
 		GA premier_GA = new GA(solutionIni, i, taille_Monde, max_time);
@@ -154,9 +154,9 @@ public class TesteurGA {
 		
 		// Test offspringSelection
 		
-		
+		/*
 		long startTime = System.currentTimeMillis();
-		int nb_Generations = 200; //800
+		int nb_Generations = 100; //800
 		for(int j=0; j<nb_Generations; j++) {
 			ArrayList<Solution> fils = premier_GA.offspring_Selection(lambda);
 			premier_GA.setMonde_solutions(fils);
@@ -176,7 +176,7 @@ public class TesteurGA {
 			//lambda += 1/nb_Generations;
 		}
 		System.err.println(System.currentTimeMillis()-startTime);
-		
+		*/
 		
 		
 		// Test trouveOptimum()
@@ -203,6 +203,11 @@ public class TesteurGA {
 		for(int x : test) res+=x+" ,";
 		System.out.println(res+"]");
 		*/
+		
+		
+		// Test solve 
+		
+		// premier_GA.solve(solutionIni, max_time);
 		
 	}
 	}
