@@ -222,6 +222,66 @@ public class GA extends AMetaheuristic{
 	}
 	
 	/*
+	 * Méthode de Crossover permettant de tester de nouvelles combinaisons (en combiant cette méthode avec les mutations)
+	 * Renvoie des fils issus de parents, générés par le crossover AEX
+	 * On implémente ici le AEX : Alternating Edges Crossover
+	 */
+	public ArrayList<Solution> AEX(ArrayList<Solution> parents) throws Exception{
+		// Transformation des deux parents en LSDEBDoublementChaineeTab
+		LSDEBDoublementChaineeTab p1 = new LSDEBDoublementChaineeTab(parents.get(0).getInstance().getNbCities());
+		LSDEBDoublementChaineeTab p2 = new LSDEBDoublementChaineeTab(parents.get(0).getInstance().getNbCities());
+		for(int i=0;i<p1.getBorne();i++) {
+			p1.ajouterQueue(parents.get(0).getCity(i));
+			p2.ajouterQueue(parents.get(1).getCity(i));
+		}
+		
+		ArrayList<Solution> cross = new ArrayList<Solution>();
+		Solution c1 = new Solution(parents.get(0).getInstance());
+		Solution c2 = new Solution(parents.get(0).getInstance());
+		boolean tourPair =false;
+		
+		c1.setCityPosition(p1.getTete(), 0);
+		c2.setCityPosition(p2.getTete(), 0);
+		for(int j=1;j<p1.getBorne();j++) {
+			if(tourPair) {
+				int successeur1=choisirSuccesseur(p1,c1,j);
+				int successeur2=choisirSuccesseur(p2,c2,j);
+				c1.setCityPosition(successeur1, j);
+				p1.retirer(successeur1);
+				c2.setCityPosition(successeur2, j);
+				p2.retirer(successeur2);
+			}
+			else {
+				int successeur1=choisirSuccesseur(p2, c1, j);
+				int successeur2=choisirSuccesseur(p1, c2, j);
+				c1.setCityPosition(successeur1, j);
+				p2.retirer(successeur1);
+				c2.setCityPosition(successeur2, j);
+				p1.retirer(successeur2);
+			}
+			tourPair=!tourPair;
+		}
+		
+		cross.add(c1);
+		cross.add(c2);
+		
+		return cross;
+	}
+	
+	public int choisirSuccesseur(LSDEBDoublementChaineeTab p, Solution c, int j) throws Exception {
+		int successeur=p.getSuccesseur()[c.getCity(j-1)];
+		if(successeur==LSDEBDoublementChaineeTab.NULL) {
+			int indice;
+			do {
+				indice = (int)(Math.random()*p.getBorne());
+			}
+			while(!p.contains(indice));
+			return indice;
+		}
+		else return successeur;
+	}
+	
+	/*
 	 * Retourne true si le fils o a un coût inférieur ou égal à ses parents, false sinon
 	 */
 	public boolean isElligible(Solution o, ArrayList<Solution> parents, double lambda) throws Exception {
@@ -288,7 +348,8 @@ public class GA extends AMetaheuristic{
 		
 		return new_Gen;
 	}
-
+	
+	
 	@Override
 	public Solution solve(Solution sol, long time) throws Exception {
 		/*
