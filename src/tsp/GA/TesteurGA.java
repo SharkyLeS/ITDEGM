@@ -6,19 +6,21 @@ import java.util.ArrayList;
 import tsp.Instance;
 import tsp.PlusProchesVoisins;
 import tsp.Solution;
+import tsp.gui.TSPGUI;
 import tsp.heuristic.AHeuristic;
+import tsp.opt.opt_2;
 
 public class TesteurGA {
-
+	
 	public TesteurGA() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 
 		String filename = null;
-		long max_time = 20;
+		long max_time = 50;
 		boolean verbose = false;
 		boolean graphical = false;
 		int typeInstance = 0;
@@ -74,6 +76,7 @@ public class TesteurGA {
 		
 		solutionIni.print(System.err);
 		GA premier_GA = new GA(solutionIni, i, taille_Monde, max_time);
+		opt_2 Opt_2 = new opt_2(i);
 		// Test mutation()
 		/* for(int j=0;j<20;j++) {
 			Solution mutation = premier_GA.mutation(solutionIni);
@@ -206,9 +209,13 @@ public class TesteurGA {
 		
 		
 		// Test solve 
+		Solution solGA = premier_GA.solve(solutionIni, max_time);
+		solGA.print(System.err);
 		
-		// premier_GA.solve(solutionIni, max_time);
+		Solution solOpt_2 = Opt_2.solve(solGA, max_time);
+		solOpt_2.print(System.err);
 		
+		TSPGUI gui = new TSPGUI(solOpt_2);
 	}
 	}
 

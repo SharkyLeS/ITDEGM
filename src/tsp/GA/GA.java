@@ -358,7 +358,7 @@ public class GA extends AMetaheuristic{
 		double lambda =0;
 		long startTime = System.currentTimeMillis();
 		long spentTime=0;
-		while(spentTime<getTimeLimit()*1000-100) {
+		while(spentTime<time*1000-100) {
 			this.setMonde_solutions(this.offspring_Selection(lambda));
 			spentTime = System.currentTimeMillis()-startTime;
 			lambda += this.getTaux_Lambda();
