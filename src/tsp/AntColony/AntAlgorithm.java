@@ -109,9 +109,7 @@ public class AntAlgorithm extends AMetaheuristic {
 	}
 	
 	public double getDeltaPheromones(double longueur) throws Exception { //Max
-		double DeltaPheromones=0;
-		DeltaPheromones=Q/longueur;
-		return DeltaPheromones;
+		return Q/longueur;
 	}
 	
 	public void majPheromones(Solution s, double longueur) throws Exception {
