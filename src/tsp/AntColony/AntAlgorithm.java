@@ -9,10 +9,10 @@ import tsp.metaheuristic.AMetaheuristic;
 public class AntAlgorithm extends AMetaheuristic {
 
 	public static final boolean trace = false;
-	public static final double alpha = 2.0; //pondere les phéromones A DEFINIR
-	public static final double beta = 3.0; //pondere la visibilité
-	public static final double rho = 0.9; // doit être entre 0 et 1
-	public static final double Q = 1.0;
+	public static final double alpha = 1.0; //pondere les phéromones A DEFINIR
+	public static final double beta = 1.0; //pondere la visibilité
+	public static final double rho = 0.5; // doit être entre 0 et 1
+	public static final double Q = 100.0;
 	
 	private Solution bestSol;
 	private double[][] proba;
@@ -55,6 +55,7 @@ public class AntAlgorithm extends AMetaheuristic {
 	public double getVisibilite(int i,int j) {
 		return visibilite[i][j];
 	}
+	
 	public void setVisibilite(double valeur,int i, int j) {
 		this.visibilite[i][j] = valeur;
 	}
@@ -70,8 +71,18 @@ public class AntAlgorithm extends AMetaheuristic {
 	public void majProba(int i, ArrayList<Integer> villesRest) {
 		double acc = 0.0;
 		for (int j : villesRest) { // d'abord le numérateur
+			double termeAlpha = Math.pow(getPheromones(i, j), alpha);
+			double termeBeta = Math.pow(getVisibilite(i,j),beta);
+			if (trace) System.out.println("A modifier : de " + i + " à " +j);
+			if (trace) System.out.println("terme en alpha : " +termeAlpha);
+			if (trace) System.out.println("terme en beta : " +termeBeta);
+			
 			this.proba[i][j] = Math.pow(getPheromones(i, j), alpha) * 
 					Math.pow(getVisibilite(i,j),beta);
+			
+			if (trace) System.out.println("donc le terme est " + this.proba[i][j]);
+			if (trace) System.out.println("----------------------------");
+			
 			acc += this.getProba(i, j);
 		}
 		for (int j : villesRest) { //on divise par le dénominateur, commun à toutes les probas
@@ -143,22 +154,17 @@ public class AntAlgorithm extends AMetaheuristic {
 
 	public Solution solve(Solution sol,long time) throws Exception {
 		long startTime = System.currentTimeMillis();
-		long spentTime = 0;
 		
 		int i=0;
 		Solution solActuelle;
-		while (spentTime<time) {
+		while (System.currentTimeMillis() - startTime<time*1000-100) {
 			solActuelle = lanceFourmi(i);
+			solActuelle.print(System.err);
+			System.out.println("la 1ere fourmi a tourné");
 			if (solActuelle.getObjectiveValue()<sol.getObjectiveValue()) {
 				sol = solActuelle.copy();
 			}
-			spentTime = System.currentTimeMillis() - startTime;
 			
-			if (i==super.getInstance().getNbCities()-1) {
-				i=0;
-			} else {
-				i++;
-			}
 		}
 		return sol;
 	}
