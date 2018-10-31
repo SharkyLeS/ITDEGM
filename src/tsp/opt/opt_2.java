@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import tsp.Instance;
 import tsp.Solution;
+import tsp.gui.TSPGUI;
 import tsp.metaheuristic.AMetaheuristic;
 
 public class opt_2 extends AMetaheuristic {
@@ -24,17 +25,22 @@ public class opt_2 extends AMetaheuristic {
 		int best_j=0;
 		Solution s_best=sol.copy();
 		double best = sol.evaluate();
-		for(int i=1;i<sol.getInstance().getNbCities()-2;i++) {
-			for(int j=i+1;j<sol.getInstance().getNbCities()-1;j++) {
+		for(int i=1;i<sol.getInstance().getNbCities()-3;i++) {
+			for(int j=i+2;j<sol.getInstance().getNbCities()-1;j++) {
 				double newDist=sol.getInstance().getDistances(sol.getCity(i),sol.getCity(j))+sol.getInstance().getDistances(sol.getCity(i+1), sol.getCity(j+1));
 				double oldDist=sol.getInstance().getDistances(sol.getCity(i), sol.getCity(i+1))+sol.getInstance().getDistances(sol.getCity(j), sol.getCity(j+1));
 				if(oldDist>newDist) {
+					/*
 					Solution s = sol.copy();
 					s.setCityPosition(sol.getCity(j), i+1);
 					s.setCityPosition(sol.getCity(i+1), j);
+					*/
+					int debut = Math.min(i+1, j);
+					int fin = Math.max(i+1, j);
+					Solution s=this.inverseRoute(sol, debut, fin);
 					if(s.evaluate()<best) {
 						best=s.evaluate();
-						s_best=s;
+						s_best=s.copy();
 						best_i=i;
 						best_j=j;
 					}
@@ -43,31 +49,38 @@ public class opt_2 extends AMetaheuristic {
 		}
 		if(best<sol.evaluate()) {
 			ameliore=true;
-			/*
-			Solution solu = sol.copy();
-			int debut = Math.min(best_i+1,best_j+1);
-			int fin = Math.max(best_i+1,best_j+1);
-			int taille = Math.abs(best_j-best_i);
-			int milieu = taille/2;
-			for(int k=0;k<milieu;k++) {
-				int a = sol.getCity(debut+k);
-				int b = sol.getCity(fin-1-k);
-				solu.setCityPosition(b, debut+k);
-				solu.setCityPosition(a, fin-k-1);
-			}
-			*/
 			sol=s_best.copy(); // sol=solu.copy();
-			sol.print(System.err);
+			// sol.print(System.err);
 		}
 		spentTime=System.currentTimeMillis()-startTime;
 		}
 		while(ameliore && (spentTime<time*1000-100));
+		if(!ameliore) System.err.println(ameliore);
 		System.err.println(spentTime);
 		sol.evaluate();
 		return sol;
 	}
 
-
+	/*
+	 * inverse dans la solution s le chemin entre les points debut et fin
+	 * renvoie cette solution
+	 */
+	public Solution inverseRoute(Solution s, int debut, int fin) throws Exception{
+		if(fin<=debut) {
+			throw new Exception("Il est nécessaire que debut<fin");
+		}
+		else {
+			Solution newSol = s.copy();
+			for(int k=0;k<(fin+1-debut)/2;k++) {
+				int a = s.getCity(debut+k);
+				int b = s.getCity(fin-k);
+				newSol.setCityPosition(b, debut+k);
+				newSol.setCityPosition(a, fin-k);
+			}
+			return newSol;
+		}
+	}
+	
 	/*
 	 * Trouve si une amélioration est possible autour du sommet j
 	 * si oui, la fait et retourne true 

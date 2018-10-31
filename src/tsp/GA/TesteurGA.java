@@ -20,7 +20,7 @@ public class TesteurGA {
 		// TODO Auto-generated method stub
 
 		String filename = null;
-		long max_time = 50;
+		long max_time = 30;
 		boolean verbose = false;
 		boolean graphical = false;
 		int typeInstance = 0;
@@ -67,6 +67,7 @@ public class TesteurGA {
 		}
 		
 		// Initialisation paramètres test
+		long startTime=System.currentTimeMillis();
 		double lambda = 0.8;
 		Instance i = new Instance(filename, typeInstance);
 		AHeuristic ini = (new PlusProchesVoisins(i,"PlusProchesVoisins",max_time));
@@ -209,13 +210,30 @@ public class TesteurGA {
 		
 		
 		// Test solve 
+		
+		/*
 		Solution solGA = premier_GA.solve(solutionIni, max_time);
 		solGA.print(System.err);
+		*/
 		
-		Solution solOpt_2 = Opt_2.solve(solGA, max_time);
+		Solution solOpt_2 = Opt_2.solve(solutionIni, max_time);
 		solOpt_2.print(System.err);
 		
 		TSPGUI gui = new TSPGUI(solOpt_2);
+		
+		long spentTime = System.currentTimeMillis()-startTime;
+		System.err.println(spentTime);
+		
+		// Test inverseRoute()
+		
+		/*
+		solutionIni.print(System.err);
+		Solution solImpair = Opt_2.inverseRoute(solutionIni, 0, 5);
+		solImpair.print(System.err);
+		Solution solPair = Opt_2.inverseRoute(solutionIni, 0, 6);
+		solPair.print(System.err);
+		*/
+		
 	}
 	}
 
