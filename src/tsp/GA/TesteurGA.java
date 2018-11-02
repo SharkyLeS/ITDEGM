@@ -217,23 +217,48 @@ public class TesteurGA {
 		solGA.print(System.err);
 		*/
 		
+		
 		Solution solOpt_2 = Opt_2.solve(solutionIni, max_time);
 		solOpt_2.print(System.err);
 		
-		/*
+		
+		
 		GA compareGA = new GA(solOpt_2,i,taille_Monde,45);
 		Solution solGA = compareGA.solve(solOpt_2, 45);
 		solGA.print(System.err);
+		
+		
+		/*
+		SA compareSA = new SA(i);
+		ArrayList<Solution> sols = new ArrayList<Solution>();
+		for(int k=0;k<1000;k++) {
+			sols.add(compareSA.solve(solOpt_2, 45));
+		}
+		
+		Solution best_sol = sols.get(0);
+		double best = sols.get(0).evaluate();
+		double avg =0;
+		
+		for(Solution s : sols) {
+			if(s.evaluate()<best) {
+				best=s.evaluate();
+				best_sol=s.copy();
+			}
+			avg+=s.evaluate();
+		}
+		avg=avg/sols.size();
+		
+		System.err.println("Meilleure solution :");
+		best_sol.print(System.err);
+		
+		System.err.println("Cout moyen : " + avg);
 		*/
 		
-		SA compareSA = new SA(i);
-		Solution solSA = compareSA.solve(solutionIni, 45);
-		solSA.print(System.err);
-		
-		TSPGUI gui = new TSPGUI(solSA);
+		TSPGUI gui = new TSPGUI(solGA);
 		
 		long spentTime = System.currentTimeMillis()-startTime;
 		System.err.println(spentTime);
+		
 		
 		// Test inverseRoute()
 		
@@ -245,6 +270,31 @@ public class TesteurGA {
 		solPair.print(System.err);
 		*/
 		
+		
+		// TESTS SA
+		
+		//SA sa = new SA(i);
+		
+		// Test swap 
+		
+		/*
+		Solution swap = sa.swap(solutionIni, 3, 6);
+		swap.print(System.err);
+		*/
+		
+		// Test inverser
+		
+		/*
+		Solution inverse = sa.inverse(solutionIni, 3, 7);
+		inverse.print(System.err);
+		*/
+		
+		// Test inserer
+		
+		/*
+		Solution insere = sa.insert(solutionIni, 7, 3);
+		insere.print(System.err);
+		*/
 	}
 	}
 
