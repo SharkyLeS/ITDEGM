@@ -355,7 +355,7 @@ public class GA extends AMetaheuristic{
 		/*
 		 * On fait GA tant que timeLimit n'a pas été atteint.
 		 */
-		double lambda =0;
+		double lambda =0.8;
 		long startTime = System.currentTimeMillis();
 		long spentTime=0;
 		while(spentTime<time*1000-100) {
