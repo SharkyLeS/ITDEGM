@@ -8,9 +8,9 @@ import tsp.metaheuristic.AMetaheuristic;
 
 public class AntAlgorithm extends AMetaheuristic {
 
-	public static final boolean trace = true;
+	public static final boolean trace = false;
 	public static final double alpha = 1.0; //pondere les phéromones A DEFINIR
-	public static final double beta = 1.0; //pondere la visibilité
+	public static final double beta = 5.0; //pondere la visibilité
 	public static final double rho = 0.5; // doit être entre 0 et 1
 	public static final double Q = 100.0;
 	
@@ -33,8 +33,8 @@ public class AntAlgorithm extends AMetaheuristic {
 				this.visibilite[j][i] = this.visibilite[i][j];
 				//if (trace) System.out.println("distance entre " + i + " et " + j +" : "+instance.getDistances(i, j));
 				//if (trace) System.out.println("visibilité entre " + i + " et " + j +" : "+this.visibilite[i][j]);
-				this.pheromones[i][j] = 0;
-				this.pheromones[j][i] = 0;
+				this.pheromones[i][j] = 1;
+				this.pheromones[j][i] = 1;
 			}
 			this.visibilite[i][i] = 0;
 			this.pheromones[i][i] = 0;
@@ -78,7 +78,7 @@ public class AntAlgorithm extends AMetaheuristic {
 			
 			this.proba[i][j] = termeAlpha * termeBeta; 
 			
-			if (!trace) {
+			if (trace) {
 				System.out.println("A modifier : de " + i + " à " +j);
 				System.out.println("terme en alpha : " +termeAlpha);
 				System.out.println("terme en beta : " +termeBeta);
@@ -90,6 +90,7 @@ public class AntAlgorithm extends AMetaheuristic {
 		}
 		for (int j : villesRest) { //on divise par le dénominateur, commun à toutes les probas
 			this.setProba(getProba(i,j)/acc, i, j);
+			if (trace) System.out.println("voici finalement la proba[i][j] : "+this.proba[i][j]);
 		}
 	}
 
@@ -105,11 +106,12 @@ public class AntAlgorithm extends AMetaheuristic {
 				villeChoisie = j;
 				break;
 			} else {
-				//if (trace) System.out.println("avant : " +acc);
+				if (trace) System.out.println("avant, acc = " +acc+ " ; this.proba[i][j] = " + this.proba[i][j]);
 				acc += this.proba[i][j];
-				//if (trace) System.out.println("apres : " +acc);
+				if (trace) System.out.println("apres : " +acc);
 			}
 		}
+		if (trace) System.out.println("la ville choisie est " + villeChoisie);
 		return villeChoisie;
 	}
 	
@@ -175,7 +177,8 @@ public class AntAlgorithm extends AMetaheuristic {
 		Solution solActuelle;
 		while (System.currentTimeMillis() - startTime<time*1000-100) {
 			solActuelle = lanceFourmi(i);
-			System.out.println("la 1ere fourmi a tourné");
+			System.out.println(solActuelle.getObjectiveValue());
+			System.out.println("------------------------------------------");
 			if (solActuelle.getObjectiveValue()<sol.getObjectiveValue()) {
 				sol = solActuelle.copy();
 			}
