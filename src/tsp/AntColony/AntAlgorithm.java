@@ -13,6 +13,7 @@ public class AntAlgorithm extends AMetaheuristic {
 	public static final double beta = 5.0; //pondere la visibilité
 	public static final double rho = 0.5; // doit être entre 0 et 1
 	public static final double Q = 100.0;
+
 	
 	private Solution bestSol;
 	private double[][] proba;
@@ -132,59 +133,71 @@ public class AntAlgorithm extends AMetaheuristic {
 		return Q/longueur;
 	}
 	
-	public void majPheromones(Solution s, double longueur) throws Exception {
+	public void majPheromones(Solution s, double pheromone, double longeur) throws Exception { /*Ajout Max */
 		for (int i=0;i<super.getInstance().getNbCities()-1;i++) {
 			this.setPheromones(rho*this.getPheromones(s.getCity(i),s.getCity(i+1))+
-					this.getDeltaPheromones(longueur), s.getCity(i) , s.getCity(i+1));
-			//amélio : ne pas mettre de pheromones sur les derniers arcs ?
-		}		
+					(pheromone + this.getDeltaPheromones(longeur)), s.getCity(i), s.getCity(i+1)) ;
+		}
 	}
-
-	public Solution lanceFourmi(int villeDeDepart) throws Exception {
-		Solution sol = new Solution(super.getInstance());
-		// Initialisation
-		sol.setCityPosition(villeDeDepart, 0);
-		sol.setCityPosition(villeDeDepart, super.getInstance().getNbCities());
-		ArrayList<Integer> villesRestantes = new ArrayList<Integer>();
-		for (int i=0; i<super.getInstance().getNbCities(); i++) {
-			if (i!=villeDeDepart) villesRestantes.add(i);
-		}
-		// Boucle
-		int i = villeDeDepart;
-		for(int position=1 ; position<super.getInstance().getNbCities();position++) {
-			majProba(i,villesRestantes);
-			i = choixVille(i,villesRestantes);
-			sol.setCityPosition(i, position);
-			for(int j=0;j<villesRestantes.size();j++) { //retire i de villesRestantes
-				if(villesRestantes.get(j)==i) {
-					villesRestantes.remove(j);
-					break;
-				}
+		public Solution lanceFourmi(int villeDeDepart, double pheromone) throws Exception {
+			Solution sol = new Solution(super.getInstance());
+			// Initialisation
+			sol.setCityPosition(villeDeDepart, 0);
+			sol.setCityPosition(villeDeDepart, super.getInstance().getNbCities());
+			ArrayList<Integer> villesRestantes = new ArrayList<Integer>();
+			for (int i=0; i<super.getInstance().getNbCities(); i++) {
+				if (i!=villeDeDepart) villesRestantes.add(i);
 			}
-		}
-		majPheromones(sol,sol.evaluate());
+			// Boucle
+			int i = villeDeDepart;
+			for(int position=1 ; position<super.getInstance().getNbCities();position++) {
+				majProba(i,villesRestantes);
+				i = choixVille(i,villesRestantes);
+				sol.setCityPosition(i, position);
+				for(int j=0;j<villesRestantes.size();j++) { //retire i de villesRestantes
+					if(villesRestantes.get(j)==i) {
+						villesRestantes.remove(j);
+						break;
+					} /* Obliger de recopier la fonction lance fourmi, sinon, fonctions qui s'apellent sans cesse entre elle */
+				}		
+			}
+		majPheromones(sol, pheromone, sol.evaluate());
 		return sol;
 	}
-	
+
 	public Solution lanceFourmi() throws Exception {
-		return lanceFourmi(0);
+		return lanceFourmi(0,0);
 	}
 
 	public Solution solve(Solution sol,long time) throws Exception {
 		long startTime = System.currentTimeMillis();
-		
-		int i=0;
+		/* Avant : int i=0; */
 		Solution solActuelle;
+		Solution solActuelle1;
+		Solution solActuelle2;
+		Solution solActuelle3;
+		Solution solActuelle4;
+		Solution solActuelle5;
+		double pheromone=0;
+		solActuelle1 = lanceFourmi((int) Math.random()*101,0);
+		solActuelle2 = lanceFourmi((int) Math.random()*101,0);
+		solActuelle3 = lanceFourmi((int) Math.random()*101,0);
+		solActuelle4 = lanceFourmi((int) Math.random()*101,0);
+		solActuelle5 = lanceFourmi((int) Math.random()*101,0);
+		pheromone = getDeltaPheromones(solActuelle1.evaluate())+getDeltaPheromones(solActuelle2.evaluate())+getDeltaPheromones(solActuelle3.evaluate())+getDeltaPheromones(solActuelle4.evaluate())+getDeltaPheromones(solActuelle5.evaluate());
 		while (System.currentTimeMillis() - startTime<time*1000-100) {
-			solActuelle = lanceFourmi(i);
+			/* Avant : solActuelle = lanceFourmi(i); */
+			solActuelle = lanceFourmi((int) Math.random()*101, pheromone);
 			System.out.println(solActuelle.getObjectiveValue());
 			System.out.println("------------------------------------------");
 			if (solActuelle.getObjectiveValue()<sol.getObjectiveValue()) {
 				sol = solActuelle.copy();
 			}
-			
 		}
+		
 		return sol;
 	}
 
 }
+
+
