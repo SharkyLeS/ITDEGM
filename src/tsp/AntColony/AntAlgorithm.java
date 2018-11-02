@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import tsp.Instance;
 import tsp.Solution;
 import tsp.metaheuristic.AMetaheuristic;
+import tsp.opt.opt_2;
 
 public class AntAlgorithm extends AMetaheuristic {
 
@@ -170,7 +171,7 @@ public class AntAlgorithm extends AMetaheuristic {
 		int villeDeDepart = super.getInstance().getNbCities()-1 ;
 		bestSol.evaluate();
 		
-		while (System.currentTimeMillis() - startTime<time*1000-100) {
+		while (System.currentTimeMillis() - startTime<(time-5)*1000-100) {
 			solActuelle = lanceFourmi(villeDeDepart);
 			solActuelle.evaluate();
 			//System.out.println(solActuelle.getObjectiveValue());
@@ -191,6 +192,12 @@ public class AntAlgorithm extends AMetaheuristic {
 				compteur =0;
 			}
 		}
+		
+		opt_2 decroisement = new opt_2(super.getInstance());
+		this.bestSol = decroisement.solve(bestSol, 5).copy();
+		
+		
+		
 		return this.bestSol;
 	}
 
