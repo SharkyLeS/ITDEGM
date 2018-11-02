@@ -198,6 +198,7 @@ public class AntAlgorithm extends AMetaheuristic {
 		return sol;
 	}
 
-}
+} 
+/**/
 
 
