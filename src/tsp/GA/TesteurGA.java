@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import tsp.Instance;
 import tsp.PlusProchesVoisins;
 import tsp.Solution;
+import tsp.SA.SA;
 import tsp.gui.TSPGUI;
 import tsp.heuristic.AHeuristic;
 import tsp.opt.opt_2;
@@ -219,7 +220,17 @@ public class TesteurGA {
 		Solution solOpt_2 = Opt_2.solve(solutionIni, max_time);
 		solOpt_2.print(System.err);
 		
-		TSPGUI gui = new TSPGUI(solOpt_2);
+		/*
+		GA compareGA = new GA(solOpt_2,i,taille_Monde,45);
+		Solution solGA = compareGA.solve(solOpt_2, 45);
+		solGA.print(System.err);
+		*/
+		
+		SA compareSA = new SA(i);
+		Solution solSA = compareSA.solve(solutionIni, 45);
+		solSA.print(System.err);
+		
+		TSPGUI gui = new TSPGUI(solSA);
 		
 		long spentTime = System.currentTimeMillis()-startTime;
 		System.err.println(spentTime);
