@@ -146,7 +146,7 @@ public class AntAlgorithm extends AMetaheuristic {
 				if (i!=villeDeDepart) villesRestantes.add(i);
 			}
 			// Boucle
-			int i = villeDeDepart;
+			int i = villeDeDepart; 
 			for(int position=1 ; position<super.getInstance().getNbCities();position++) {
 				majProba(i,villesRestantes);
 				i = choixVille(i,villesRestantes);
