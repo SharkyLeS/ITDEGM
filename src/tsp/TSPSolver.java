@@ -131,51 +131,6 @@ public class TSPSolver {
 		
 		
 		exe.shutdown(); //necessaire ?
-		
-	
-		/*
-		// INITIALISATION FOURMIS
-		Colonie colo = new Colonie(this.m_instance,2.0,2.0,2.0,100);
-		int i = 2;
-		int NbCycles=0;
-		ArrayList<Integer> parcoursinit=colo.lanceFourmi(0);
-		double distanceParcoursinit=this.getLongueur(parcoursinit);
-		double minimum=distanceParcoursinit;
-		// BOUCLE
-		do {
-			ArrayList<Integer> parcours = colo.lanceFourmi(i);
-			double distParcours = this.getLongueur(parcours);
-			if (distParcours<=minimum) { // if (distanceParcours<=m_solution.evaluate)
-				minimum=distParcours; // Modifier directement m_solution
-				NbCycles=0; // Tout transferer dans le solve de Colonie 
-			}
-			else {
-				NbCycles ++;
-			}
-			i++;
-			i=i%(m_instance.getNbCities());
-			
-		} while ((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities())&&(NbCycles<100));
-		*/
-		/* 
-			int i=1;
-			ArrayList<Integer> idRestants = new ArrayList<Integer>();
-			idRestants=this.initialiseID(idRestants);
-			int idCity=this.CherchePlusProche(0, idRestants);
-			do
-			{
-				//Stupid Heuristic
-				m_solution.setCityPosition(idCity, i);
-				this.removeDisponibleCity(idRestants, idCity);
-				idCity=this.CherchePlusProche(idCity, idRestants);
-				i++;
-
-				// Code a loop base on time here
-				spentTime = System.currentTimeMillis() - startTime;
-			}while((spentTime < (m_timeLimit * 1000 - 100) )&&(i<m_instance.getNbCities()));
-			m_solution.setCityPosition(0, 0);
-			m_solution.setCityPosition(0, m_instance.getNbCities());
-		// */
 	}
 		
 	// -----------------------------
@@ -238,70 +193,5 @@ public class TSPSolver {
 	}
 	public Solution compareSolution(Solution s1, Solution s2, Solution s3,Solution s4) {
 		return compareSolution(compareSolution(s1,s2),compareSolution(s3,s4));
-	}
-	
-	
-	public int CherchePlusProche(int idCity, ArrayList<Integer> idRestants) throws Exception {
-		if((idCity<0)||(idCity>m_instance.getNbCities()-1)) {
-			throw new Exception("Error : index " + idCity
-					+ " is not valid, it should range between 0 and "
-					+ (m_instance.getNbCities()-1));
-		}
-		else {
-			double dmin=10000000;
-			int idPlusProche=idCity;
-			for(int j:idRestants) {
-				if(m_instance.getDistances(idCity,j)<=dmin) {
-					dmin=m_instance.getDistances(idCity,j);
-					idPlusProche=j;
-				}
-			}
-			return idPlusProche;
-		}
-
-	}
-
-	public ArrayList<Integer> initialiseID(ArrayList<Integer> idRestants) {
-		//for(int i=-1;i<m_instance.getNbCities()-2;i++) {
-		for(int i=1;i<m_instance.getNbCities();i++) {
-			//idRestants.add(i+2);
-			idRestants.add(i);
-		}
-		return idRestants;
-	}
-
-	public void removeDisponibleCity(ArrayList<Integer> idRestants, int idCity) throws Exception{
-		if((idCity<0)||(idCity>m_instance.getNbCities()-1)) {
-			throw new Exception("Error : index " + idCity
-					+ " is not valid, it should range between 0 and "
-					+ (m_instance.getNbCities()-1));
-		}
-		else {
-			for(int i=0;i<idRestants.size();i++) {
-				if(idRestants.get(i)==idCity) {
-					idRestants.remove(i);
-					break;
-				}
-			}
-		}
-	}
-	public long MinimumListe(ArrayList<Long> l) {
-		int indicemin=0;
-		for (int i=0;i<l.size();i++) {
-			if (l.get(indicemin)<l.get(i)) {
-				indicemin=i;
-			}
-		}
-		return l.get(indicemin);
-	}
-	
-	
-	public double getLongueur(ArrayList<Integer> l) throws Exception {
-		double acc = 0;
-		for (int i = 0; i < l.size()-1; i++) {
-			acc += m_instance.getDistances(l.get(i), l.get(i+1));
-		}
-		return acc;
-	}
-	
+	}	
 }
