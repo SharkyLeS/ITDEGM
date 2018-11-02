@@ -168,16 +168,21 @@ public class AntAlgorithm extends AMetaheuristic {
 		double deltaPheromone = 0.0;
 		int compteur = 0;
 		int villeDeDepart = super.getInstance().getNbCities()-1 ;
+		bestSol.evaluate();
 		
 		while (System.currentTimeMillis() - startTime<time*1000-100) {
 			solActuelle = lanceFourmi(villeDeDepart);
-			System.out.println(solActuelle.evaluate());
+			solActuelle.evaluate();
+			//System.out.println(solActuelle.getObjectiveValue());
 			solList.add(solActuelle);
 			deltaPheromone += getDeltaPheromones(solActuelle.getObjectiveValue());
 			villeDeDepart = (int) (Math.random()*(super.getInstance().getNbCities()));
 			compteur++;
 
-			if (solActuelle.getObjectiveValue()<bestSol.getObjectiveValue()) this.bestSol = solActuelle.copy();
+			if (solActuelle.getObjectiveValue()<bestSol.getObjectiveValue()) {
+				this.bestSol = solActuelle.copy();
+				System.out.println("j'ai tenté de modifier bestSol ----------------");
+			}
 
 			if (compteur == m) {
 				majPheromones(solList,deltaPheromone);
