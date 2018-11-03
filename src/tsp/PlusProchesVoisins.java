@@ -63,7 +63,6 @@ public class PlusProchesVoisins extends AHeuristic {
 
 	@Override
 	public void solve() throws Exception {
-		m_solution.print(System.err);
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
 		int i=1;

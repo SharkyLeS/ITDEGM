@@ -25,7 +25,7 @@ public class ThreadPerso implements Callable {
 	
 	public void run() {
 		try {
-			Solution s = AM.solve(this.ini, timeLimit-time);
+			Solution s = AM.solve(this.ini, timeLimit-time-5);
 			ini = s.copy();
 			
 		} catch (Exception e) {

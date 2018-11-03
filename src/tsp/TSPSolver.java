@@ -80,59 +80,43 @@ public class TSPSolver {
 	 * 
 	 * @throws Exception may return some error, in particular if some vertices index are wrong.
 	 */
-	public void solve() throws Exception
-	{
-		boolean GA = false;
-		boolean ant = true;
-		boolean thread3 = false;
-		boolean thread4 = false;
+	public void solve() throws Exception {
 		
-		long startTime = System.currentTimeMillis();
-		
-		m_solution.print(System.err);
+		// Solution initiale : plus proche voisin
 		AHeuristic ini = (new PlusProchesVoisins(m_instance,"PlusProchesVoisins",m_timeLimit));
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
+
+		Callable[] solvers = new Callable[4];
+
+		// Thread 1 : algorithme génétique + 2-opt
+		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),
+				solutionIni, 0 , getTimeLimit());
 		
-		Callable[] solvers = new Callable[2];
-		if (ant) {
-			solvers[0] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
-			solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
-		}
-		if (GA) {
-			solvers[1] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),
-				solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
-		}/*
-		if (nbThread == 3) {
-			solvers[2] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
-					solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
-		}
-		if (nbThread == 4) {
-			solvers[3] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
-					solutionIni, System.currentTimeMillis() - startTime , getTimeLimit());
-		}*/
+		// Thread 2 : algorithme de colonie de fourmis + 2-opt
+		solvers[1] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
+				solutionIni, 0 , getTimeLimit());
 		
-		ExecutorService exe = Executors.newFixedThreadPool(2); 
-				
-		if (ant) {
-			Future<Solution> fut0 = exe.submit(solvers[0]);
-			m_solution = fut0.get();
-		} else if (GA) {
-			Future<Solution> fut1 = exe.submit(solvers[1]);
-			Solution solutionGA = fut1.get();
-			m_solution=solutionGA;
-		} else if (ant&&GA) {
-			Future<Solution> fut0 = exe.submit(solvers[0]);
-			Future<Solution> fut1 = exe.submit(solvers[1]);
-			m_solution = compareSolution(fut0.get(),fut1.get());
-		} else {
-			m_solution = solutionIni;
-		}
+		// Thread 3 : algorithme de colonie de fourmis + 2-opt
+		solvers[2] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
+				solutionIni, 0 , getTimeLimit());
+
+		// Thread 4 : algorithme de colonie de fourmis + 2-opt
+		solvers[3] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
+				solutionIni, 0 , getTimeLimit());
+
+		// Déclaration et exécution des 4 threads
+		ExecutorService exe = Executors.newFixedThreadPool(4); 
+		Future<Solution> fut0 = exe.submit(solvers[0]);
+		Future<Solution> fut1 = exe.submit(solvers[1]);
+		Future<Solution> fut2 = exe.submit(solvers[2]);
+		Future<Solution> fut3 = exe.submit(solvers[3]);
 		
-		
-		exe.shutdown(); //necessaire ?
+		// Comparaison des solutions et fermeture des threads
+		m_solution = compareSolution(fut0.get(),fut1.get(),fut2.get(),fut3.get());
+		exe.shutdown(); // ou shutdownNow() ?????
 	}
-		
+
 	// -----------------------------
 	// ----- GETTERS / SETTERS -----
 	// -----------------------------
@@ -176,11 +160,23 @@ public class TSPSolver {
 		this.m_timeLimit = time;
 	}
 
-
-
-	// METHODES PERSO
-
-	public Solution compareSolution(Solution s1, Solution s2) {
+	
+	// ----------------------------------------
+	// ----- PERSONAL METHODS -----
+	// ----------------------------------------
+	
+	
+	/**
+	 * Compare deux solutions et renvoie celle qui a le trajet le plus efficace
+	 * @param s1 solution 1 à comparer
+	 * @param s2 solution 2 à comparer
+	 * @return la solution ayant le plus court chemin parmi s1 et s2
+	 * @throws Exception si une des solutions n'est pas une solution faisable
+	 */
+	public Solution compareSolution(Solution s1, Solution s2) throws Exception {
+		if((!s1.isFeasible()) || (!s2.isFeasible())) {
+			throw new Exception("Error : at least one solution is not feasible");
+		}
 		if (s1.getObjectiveValue()>s2.getObjectiveValue()) {
 			return s2;
 		} else {
@@ -188,10 +184,16 @@ public class TSPSolver {
 		}
 	}
 	
-	public Solution compareSolution(Solution s1, Solution s2, Solution s3) {
-		return compareSolution(s1,compareSolution(s2,s3));
-	}
-	public Solution compareSolution(Solution s1, Solution s2, Solution s3,Solution s4) {
+	/**
+	 * Compare 4 solutions et renvoie celle qui a le trajet le plus efficace
+	 * @param s1 solution 1 à comparer
+	 * @param s2 solution 2 à comparer
+	 * @param s3 solution 3 à comparer
+	 * @param s4 solution 4 à comparer
+	 * @return la solution ayant le plus court chemin parmi s1, s2, s3 et s4
+	 * @throws Exception si une des solutions n'est pas une solution faisable
+	 */
+	public Solution compareSolution(Solution s1, Solution s2, Solution s3,Solution s4) throws Exception {
 		return compareSolution(compareSolution(s1,s2),compareSolution(s3,s4));
 	}	
 }
