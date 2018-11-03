@@ -13,7 +13,7 @@ public class SA extends AMetaheuristic {
 	private static final double T0 = 10e5;
 	private static final double T_lim = 10e-10;
 	private static final double Kb = 1.380648e-23;
-	private static final int nb_Temperatures=1000;
+	private static final int nb_Temperatures=10000;
 	private static final double p0 = 0.4;
 	private static final long nb_Operations = (long) 1e50;
 	
@@ -39,7 +39,26 @@ public class SA extends AMetaheuristic {
 
 	@Override
 	public Solution solve(Solution sol, long time) throws Exception {
-		return this.LBCooling(sol, T0, T_rate, T_lim, time);
+		ArrayList<Solution> sols = new ArrayList<Solution>();
+		int k=0;
+		double startTime = System.currentTimeMillis();
+		double spentTime = 0.0;
+		while((spentTime<time*1000-100)&&(k<1000)) {
+			sols.add(this.LBCooling(sol, T0, T_rate, T_lim, time));
+			spentTime = System.currentTimeMillis()-startTime;
+		}
+		
+		Solution best_sol = sols.get(0);
+		double best = sols.get(0).evaluate();
+		
+		for(Solution s : sols) {
+			if(s.evaluate()<best) {
+				best=s.evaluate();
+				best_sol=s.copy();
+			}
+		}
+		
+		return best_sol;
 	}
 
 	public Solution cooling(Solution sol, double T0, double T_rate, double T_lim, long max_time) throws Exception {

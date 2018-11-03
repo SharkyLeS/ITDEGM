@@ -55,7 +55,7 @@ public class opt_2 extends AHeuristic {
 		spentTime=System.currentTimeMillis()-startTime;
 		}
 		while(ameliore && (spentTime<time*1000-100));
-		if(!ameliore) System.err.println(ameliore);
+		// if(!ameliore) System.err.println(ameliore);
 		System.err.println(spentTime);
 		return sol;
 	}
