@@ -36,11 +36,11 @@ public class PlusProchesVoisins extends AHeuristic {
 
 	}
 
-	public ArrayList<Integer> initialiseID(ArrayList<Integer> idRestants) {
+	public ArrayList<Integer> initialiseID(ArrayList<Integer> idRestants, int idDebut) {
 		//for(int i=-1;i<m_instance.getNbCities()-2;i++) {
-		for(int i=1;i<m_instance.getNbCities();i++) {
+		for(int i=0;i<m_instance.getNbCities();i++) {
 			//idRestants.add(i+2);
-			idRestants.add(i);
+			if(i!=idDebut) idRestants.add(i);
 		}
 		return idRestants;
 	}
@@ -66,25 +66,37 @@ public class PlusProchesVoisins extends AHeuristic {
 		m_solution.print(System.err);
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
+		Solution best_sol = this.Voisin(0);
+		double best = this.Voisin(0).evaluate();
+		for(int i=1;i<m_instance.getNbCities();i++) {
+			Solution s = this.Voisin(i);
+			if(s.evaluate()<best_sol.evaluate()) {
+				best_sol=s.copy();
+				best=s.evaluate();
+			}
+		}
+		m_solution=best_sol.copy();
+	}
+
+	public Solution Voisin(int villeDebut) throws Exception {
 		int i=1;
+		Solution s = new Solution(m_instance);
 		ArrayList<Integer> idRestants = new ArrayList<Integer>();
-		idRestants=this.initialiseID(idRestants);
-		int idCity=this.CherchePlusProche(0, idRestants);
+		idRestants=this.initialiseID(idRestants, villeDebut);
+		int idCity=this.CherchePlusProche(villeDebut, idRestants);
 		do
 		{
 			//Stupid Heuristic
-			m_solution.setCityPosition(idCity, i);
+			s.setCityPosition(idCity, i);
 			this.removeDisponibleCity(idRestants, idCity);
 			idCity=this.CherchePlusProche(idCity, idRestants);
 			i++;
 
-			// Code a loop base on time here
-			spentTime = System.currentTimeMillis() - startTime;
-		}while((spentTime < (this.gettimeLimit() * 1000 - 100) )&&(i<m_instance.getNbCities()));
-		m_solution.setCityPosition(0, 0);
-		m_solution.setCityPosition(0, m_instance.getNbCities());
+		}while(i<m_instance.getNbCities());
+		s.setCityPosition(villeDebut, 0);
+		s.setCityPosition(villeDebut, m_instance.getNbCities());
 		
+		return s;
 	}
-
 	
 }

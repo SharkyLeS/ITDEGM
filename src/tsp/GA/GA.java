@@ -12,10 +12,10 @@ public class GA extends AMetaheuristic{
 	private int taille_Monde;
 	private long timeLimit;
 	// Prportion de la population qui doit être renouvelée dans génération suivante
-	public static final double Success_Ratio = 0.98;
+	public static final double Success_Ratio = 0.9;
 	// Nombre maximal de fils à générer à chaque itération pour créer gén suivante
 	// (Multiple de la taille de la population)
-	public static final double Max_Selection_Pressure = 25;
+	public static final double Max_Selection_Pressure = 15;
 	public static final double Proba_Mutation = 0.3;
 	
 	public GA(Solution ini, Instance i, int taille, long timeLimit) throws Exception {
@@ -133,8 +133,8 @@ public class GA extends AMetaheuristic{
 	public ArrayList<Solution> choisirParentsTournoi() throws Exception{
 		ArrayList<Solution> parents = new ArrayList<Solution>();
 		for(int i=0;i<2;i++) {
-			int i1 = 1+(int)(Math.random()*(this.getTaille_Monde()-1));
-			int i2 = 1+(int)(Math.random()*(this.getTaille_Monde()-1));
+			int i1 = (int)(Math.random()*(this.getTaille_Monde()));
+			int i2 = (int)(Math.random()*(this.getTaille_Monde()));
 			Solution p1 = this.getMonde_solutions().get(i1);
 			Solution p2 = this.getMonde_solutions().get(i2);
 			if(p1.evaluate()<=p2.evaluate()) parents.add(p1);
@@ -150,8 +150,8 @@ public class GA extends AMetaheuristic{
 	public Solution mutation(Solution s) throws Exception {
 		// Attention tout de même à ne pas changer la ville de départ/arrivée
 		Solution sol = s.copy();
-		int p1 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
-		int p2 = (int)(1+Math.random()*(s.getInstance().getNbCities()-1));
+		int p1 = 1+(int)(Math.random()*(s.getInstance().getNbCities()-1));
+		int p2 = 1+(int)(Math.random()*(s.getInstance().getNbCities()-1));
 		int v1 = sol.getCity(p1);
 		int v2 = sol.getCity(p2);
 		sol.setCityPosition(v1, p2);
@@ -170,7 +170,7 @@ public class GA extends AMetaheuristic{
 		if(nb_Cities<=40) coupure=nb_Cities/2;
 		// On s'affranchit d'un cas de très petite instance par une modélisation basique
 		else {
-			coupure = 40+(int)(Math.random()*(nb_Cities-39));
+			coupure = 40+(int)(Math.random()*(nb_Cities-40));
 			// On choisit la coupure du crossover telle que : 10<=coupure<=nb_Cities/2
 		}
 		
@@ -181,7 +181,7 @@ public class GA extends AMetaheuristic{
 		ArrayList<Integer> cities2 = new ArrayList<Integer>();
 		ArrayList<Solution> offsprings = new ArrayList<Solution>();
 		
-		for(int i=0;i<nb_Cities;i++) {
+		for(int i=0;i<=nb_Cities;i++) {
 			if(i<=coupure) {
 				o1.setCityPosition(parents.get(0).getCity(i), i);
 				cities1.add(parents.get(0).getCity(i));
@@ -214,6 +214,9 @@ public class GA extends AMetaheuristic{
 					}
 					city2++;
 				}
+				
+				o1.setCityPosition(o1.getCity(0), nb_Cities);
+				o2.setCityPosition(o2.getCity(0), nb_Cities);
 			}	
 		}
 		offsprings.add(o1);
@@ -355,7 +358,7 @@ public class GA extends AMetaheuristic{
 		/*
 		 * On fait GA tant que timeLimit n'a pas été atteint.
 		 */
-		double lambda =0.8;
+		double lambda =0;
 		long startTime = System.currentTimeMillis();
 		long spentTime=0;
 		while(spentTime<time*1000-100) {

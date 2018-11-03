@@ -14,10 +14,19 @@ public class SA extends AMetaheuristic {
 	private static final double T_lim = 10e-10;
 	private static final double Kb = 1.380648e-23;
 	private static final int nb_Temperatures=1000;
-	private static final double p0 = 0.6;
-	private static final long nb_Operations = (long) 1e100;
+	private static final double p0 = 0.4;
+	private static final long nb_Operations = (long) 1e50;
 	
 	private ArrayList<Double> temperatures;
+	private double proba;
+	
+	public double getProba() {
+		return proba;
+	}
+
+	public void setProba(double proba) {
+		this.proba = proba;
+	}
 
 	public SA(Instance instance) throws Exception {
 		super(instance, "Simulated Annealing");
@@ -109,7 +118,8 @@ public class SA extends AMetaheuristic {
 				y = this.HybridGreedyOperator(x);
 			}
 			while(y.evaluate()<=x.evaluate());
-			double t = (y.evaluate()-x.evaluate())/Math.log(p0);
+			double t = (x.evaluate()-y.evaluate())/Math.log(getProba());
+			//System.err.println(t);
 			L.add(t);
 		}
 		Collections.sort(L);

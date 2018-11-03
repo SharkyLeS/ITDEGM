@@ -74,9 +74,11 @@ public class TesteurGA {
 		AHeuristic ini = (new PlusProchesVoisins(i,"PlusProchesVoisins",max_time));
 		ini.solve();
 		Solution solutionIni = ini.getSolution();
-		int taille_Monde = 2500; //2500
+		int taille_Monde = 300; //2500
 		
 		solutionIni.print(System.err);
+		System.err.println(solutionIni.isFeasible());
+		System.err.println(System.currentTimeMillis()-startTime);
 		GA premier_GA = new GA(solutionIni, i, taille_Monde, max_time);
 		opt_2 Opt_2 = new opt_2(i);
 		// Test mutation()
@@ -121,10 +123,13 @@ public class TesteurGA {
 			ArrayList<Solution> parents = premier_GA.choisir_Parents();
 			System.err.println("Parent 1 :");
 			parents.get(0).print(System.err);
+			System.err.println(parents.get(0).isFeasible());
 			System.err.println("Parent 2 :");
 			parents.get(1).print(System.err);
+			System.err.println(parents.get(1).isFeasible());
 		}
 		*/
+		
 		// Attention, renvoie souvent deux solutions ayant juste subi une mutation
 		
 		// Test Crossover MPX
@@ -135,7 +140,9 @@ public class TesteurGA {
 		parents.get(0).print(System.err);
 		parents.get(1).print(System.err);
 		enfants.get(0).print(System.err);
+		System.err.println(enfants.get(0).isFeasible());
 		enfants.get(1).print(System.err);
+		System.err.println(enfants.get(1).isFeasible());
 		*/
 		
 		// Test isElligible()
@@ -212,27 +219,35 @@ public class TesteurGA {
 		
 		// Test solve 
 		
+		
+		GA compareGA = new GA(solutionIni,i,taille_Monde,45);
+		Solution solGA = premier_GA.solve(solutionIni, 45);
+		solGA.print(System.err);
+		System.err.println(solGA.isFeasible());
+		
+		
 		/*
-		Solution solGA = premier_GA.solve(solutionIni, max_time);
-		solGA.print(System.err);
+		SA compareSA = new SA(i);
+		Solution solSA = compareSA.solve(solutionIni, max_time);
+		solSA.print(System.err);
+		System.err.println(solSA.isFeasible());
 		*/
-		
-		
-		Solution solOpt_2 = Opt_2.solve(solutionIni, max_time);
-		solOpt_2.print(System.err);
-		
-		
-		
-		GA compareGA = new GA(solOpt_2,i,taille_Monde,45);
-		Solution solGA = compareGA.solve(solOpt_2, 45);
-		solGA.print(System.err);
 		
 		
 		/*
 		SA compareSA = new SA(i);
 		ArrayList<Solution> sols = new ArrayList<Solution>();
-		for(int k=0;k<1000;k++) {
-			sols.add(compareSA.solve(solOpt_2, 45));
+		ArrayList<Double> probas = new ArrayList<Double>();
+		Double p = 0.0;
+		while(p<1) {
+			probas.add(p);
+			p+=0.01;
+		}
+		for(int k=0;k<100;k++) {
+			for(int l=0;l<probas.size();l++) {
+				compareSA.setProba(probas.get(l));
+				sols.add(compareSA.solve(solutionIni, max_time));
+			}
 		}
 		
 		Solution best_sol = sols.get(0);
@@ -254,10 +269,16 @@ public class TesteurGA {
 		System.err.println("Cout moyen : " + avg);
 		*/
 		
-		TSPGUI gui = new TSPGUI(solGA);
+		Solution solOpt_2 = Opt_2.solve(solGA, max_time);
+		solOpt_2.print(System.err);
+		System.err.println(solOpt_2.isFeasible());
+		
+		
+		TSPGUI gui = new TSPGUI(solOpt_2);
 		
 		long spentTime = System.currentTimeMillis()-startTime;
 		System.err.println(spentTime);
+		
 		
 		
 		// Test inverseRoute()
