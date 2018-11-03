@@ -18,8 +18,7 @@ public class TesteurGA {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
-
+		
 		String filename = null;
 		long max_time = 30;
 		boolean verbose = false;
