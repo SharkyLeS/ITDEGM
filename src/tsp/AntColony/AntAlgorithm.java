@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import tsp.Instance;
 import tsp.Solution;
 import tsp.metaheuristic.AMetaheuristic;
+import tsp.opt.opt_2;
 
 public class AntAlgorithm extends AMetaheuristic {
 
 	public static final boolean trace = false;
-	public static final int m = 49; // Nombre de fourmis par cycle
+	public static final int m = 20; // Nombre de fourmis par cycle
 	public static final double alpha = 1.0; // pondere les phéromones A DEFINIR
 	public static final double beta = 5.0; // pondere la visibilité
 	public static final double rho = 0.7; // doit être entre 0 et 1
@@ -34,8 +35,8 @@ public class AntAlgorithm extends AMetaheuristic {
 				this.visibilite[j][i] = this.visibilite[i][j];
 				//if (trace) System.out.println("distance entre " + i + " et " + j +" : "+instance.getDistances(i, j));
 				//if (trace) System.out.println("visibilité entre " + i + " et " + j +" : "+this.visibilite[i][j]);
-				this.pheromones[i][j] = 100;
-				this.pheromones[j][i] = 100;
+				this.pheromones[i][j] = 10;
+				this.pheromones[j][i] = 10;
 			}
 			this.visibilite[i][i] = 0;
 			this.pheromones[i][i] = 0;
@@ -145,7 +146,7 @@ public class AntAlgorithm extends AMetaheuristic {
 				if (i!=villeDeDepart) villesRestantes.add(i);
 			}
 			// Boucle
-			int i = villeDeDepart;
+			int i = villeDeDepart; 
 			for(int position=1 ; position<super.getInstance().getNbCities();position++) {
 				majProba(i,villesRestantes);
 				i = choixVille(i,villesRestantes);
@@ -170,7 +171,7 @@ public class AntAlgorithm extends AMetaheuristic {
 		int villeDeDepart = super.getInstance().getNbCities()-1 ;
 		bestSol.evaluate();
 		
-		while (System.currentTimeMillis() - startTime<time*1000-100) {
+		while (System.currentTimeMillis() - startTime<(time-5)*1000-100) {
 			solActuelle = lanceFourmi(villeDeDepart);
 			solActuelle.evaluate();
 			//System.out.println(solActuelle.getObjectiveValue());
@@ -191,6 +192,12 @@ public class AntAlgorithm extends AMetaheuristic {
 				compteur =0;
 			}
 		}
+		
+		opt_2 decroisement = new opt_2(super.getInstance());
+		this.bestSol = decroisement.solve(bestSol, 5).copy();
+		
+		
+		
 		return this.bestSol;
 	}
 
