@@ -104,10 +104,18 @@ public class TSPSolver {
 				solutionIni, 0 , getTimeLimit());
 
 		// Thread 4 :  2-opt + algorithme SA
+		
+		/*
 		opt_2 Opt_2 = new opt_2(m_instance);
 		Solution solOpt_2 = Opt_2.solve(solutionIni, getTimeLimit());
 		solvers[3] = new ThreadPerso(new SA(m_instance),solOpt_2, 0, getTimeLimit());
-
+		*/
+		
+		
+		solvers[3] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
+				solutionIni, 0 , getTimeLimit());
+		
+		
 		// Déclaration et exécution des 4 threads
 		ExecutorService exe = Executors.newFixedThreadPool(4); 
 		Future<Solution> fut0 = exe.submit(solvers[0]);

@@ -74,6 +74,7 @@ public class PlusProchesVoisins extends AHeuristic {
 				best=s.evaluate();
 			}
 		}
+		
 		m_solution=best_sol.copy();
 	}
 

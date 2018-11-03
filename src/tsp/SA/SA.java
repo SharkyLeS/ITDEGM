@@ -43,7 +43,7 @@ public class SA extends AMetaheuristic {
 		int k=0;
 		double startTime = System.currentTimeMillis();
 		double spentTime = 0.0;
-		while((spentTime<time*1000-100)&&(k<1000)) {
+		while((spentTime<time*1000)&&(k<1000)) {
 			sols.add(this.LBCooling(sol, T0, T_rate, T_lim, time));
 			spentTime = System.currentTimeMillis()-startTime;
 		}
@@ -57,7 +57,6 @@ public class SA extends AMetaheuristic {
 				best_sol=s.copy();
 			}
 		}
-		
 		return best_sol;
 	}
 
@@ -75,7 +74,6 @@ public class SA extends AMetaheuristic {
 				if(x<=p) sol=s.copy();
 			}
 			T*=T_rate;
-			spentTime = System.currentTimeMillis()-startTime;
 		}
 		return sol;
 	}
