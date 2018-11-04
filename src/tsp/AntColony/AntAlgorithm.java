@@ -104,15 +104,15 @@ public class AntAlgorithm extends AMetaheuristic {
 		}
 	}
 	/**
-	 * La fourmie est ï¿½ la ville i et choisie la ville suivante. La colonne i est une
-	 * colonne de probabilitï¿½. Prenons un exemple simple pour comprendre. S'il ne reste
-	 * que 3 villes et qu'on a 0,6 (1); 0,2(2) et 0,2(3) comme proba associï¿½es. On tire
-	 *  un double alï¿½atoire entre 0 et 1, s'il est entre 0 et 0,6 -> (1) ; entre 0,6 et
+	 * La fourmie est sur la ville i et choisie la ville suivante. La colonne i est une
+	 * colonne de probabilite. Prenons un exemple simple pour comprendre. S'il ne reste
+	 * que 3 villes et qu'on a 0,6 (1); 0,2(2) et 0,2(3) comme proba associees. On tire
+	 *  un double aleatoire entre 0 et 1, s'il est entre 0 et 0,6 -> (1) ; entre 0,6 et
 	 *  0,8 ->(2) et entre 0,8 et 1 ->(3).   
 	 * @param int i, 0<=i<super.getInstances().getNbcities()-1.
 	 * @param ArrayList<Integer>villesRest (villes pas encore parcourues)
 	 * 1<=villesRest.size()<super.getInstances().getNbCities()-1.
-	 * @return ville choisie aprï¿½s i.
+	 * @return ville choisie apres i.
 	 * @throws Exception
 	 */
 	public int choixVille(int i, ArrayList<Integer> villesRest) throws Exception {
@@ -139,24 +139,24 @@ public class AntAlgorithm extends AMetaheuristic {
 		return villeChoisie;
 	}
 	/**
-	 * La fourmie a terminï¿½ son tour. On calcule la quantitï¿½ de phï¿½romones supplï¿½mentaire
-	 * dï¿½posï¿½e sur chaque arc de passage. Fomrule (3) fournis.
+	 * La fourmie a termine son tour. On calcule la quantitité de phéromones supplémentaire
+	 * depose sur chaque arc de passage. Fomrule (3) fournis.
 	 * @param longueur. Il s'agit de la longueur toal du cycle (ce sera
 	 * getObjectivevalue() puisque qu'on travaille directement sur des objets Solution. 
-	 * @return La quantitï¿½ de phï¿½romone supplï¿½mentaire dï¿½posï¿½e sur chaque arc de passage.
+	 * @return La quantite de pheromone supplementaire depose sur chaque arc de passage.
 	 * @throws Exception
 	 */
 	public double getDeltaPheromones(double longueur) throws Exception { //Max
 		return Q/longueur;
 	}
 	/**
-	 * Cette fonction met ï¿½ jour les quantitï¿½ de phï¿½romone sur chaque arc (i,j). D'aprï¿½s
-	 * la formule fournis (2), la quantitï¿½ de phï¿½romones presente sur l'arc (i,j) dï¿½pend
-	 * de celle prï¿½sente auparavant (*rho)  auquelle on ajoute la somme de toutes les
-	 * pheromones dï¿½posï¿½es par un nombre m de fourmies prï¿½cï¿½dentes sur ce mï¿½me arc. 
-	 * (somme calculï¿½e plus loins dans le solve()). 
+	 * Cette fonction met ici à jour les quantite de pheromone sur chaque arc (i,j). D'aprï¿½s
+	 * la formule fournis (2), la quantite de pheromones presente sur l'arc (i,j) depend
+	 * de celle presente auparavant (*rho)  auquelle on ajoute la somme de toutes les
+	 * pheromones deposes par un nombre m de fourmies precedentes sur ce meme arc. 
+	 * (somme calculee plus loins dans le solve()). 
 	 * @param ArrayList<Solution>listeSolution de taille m.
-	 * @param double pheromones : somme des phï¿½romones dï¿½posï¿½es sur chaque arc par 
+	 * @param double pheromones : somme des pheromones deposes sur chaque arc par 
 	 * chaque fourmies.
 	 * @throws Exception
 	 */
@@ -175,9 +175,9 @@ public class AntAlgorithm extends AMetaheuristic {
 		}
 	}
 		/**
-		 * En partant d'une villeDeDepart, on obtient le chemin effectuï¿½ par la fourmie.
+		 * En partant d'une villeDeDepart, on obtient le chemin effectue par la fourmie.
 		 * @param int villeDeDepart, 0<=villeDeDepart<super.getInstances.getNbCities()-1.
-		 * @return un Objet Solution qui est le cycle effectuï¿½ par la fourmie qui est 
+		 * @return un Objet Solution qui est le cycle effectue par la fourmie qui est 
 		 * partie de sa VilleDeDepart.
 		 * @throws Exception
 		 */
@@ -207,7 +207,18 @@ public class AntAlgorithm extends AMetaheuristic {
 			}
 		return sol;
 	}
-
+		 /**
+		  * Fonction permettant de renvoyer la meilleure solution. Tout d'abord, on 
+		  * lance m fourmie qui vont laisser des pheromones sur leurs arcs de passage.
+		  * On met ensuite la matrice des pheromones à jour et on observe le comportement
+		  * des m+1 jusqu'a m+m fourmis avant de reffectuer un lancement de m fourmies,
+		  * etc...On renvoie la meilleur solution en retirant les croisements qui augmentent
+		  * bestSol.getObjectiveValue();
+		  * @param Solution sol ???
+		  * @param long time : temps pour effectuer les calculs.
+		  * @return la meilleure solution
+		  * @throws Exception
+		  */
 	public Solution solve(Solution sol,long time) throws Exception {
 		// this.bestSol = sol.copy(); dÃ©jÃ  fait dans l'initialisation !
 		long startTime = System.currentTimeMillis();
