@@ -9,7 +9,7 @@ public class AntAlgorithm extends AMetaheuristic {
 
 	public static final boolean trace = false;
 	public static final int m = 100; // Nombre de fourmis par cycle
-	public static final double alpha = 2.0; // pondere les phéromones A DEFINIR
+	public static final double alpha = 1.5; // pondere les phéromones A DEFINIR
 	public static final double beta = 5.0; // pondere la visibilité
 	public static final double rho = 0.5; // doit être entre 0 et 1
 	public static final double Q = 100.0;
@@ -229,7 +229,6 @@ public class AntAlgorithm extends AMetaheuristic {
 
 			if (solActuelle.getObjectiveValue()<bestSol.getObjectiveValue()) {
 				this.bestSol = solActuelle.copy();
-				System.out.println("j'ai tenté de modifier bestSol ----------------");
 			}
 
 			if (compteur == m) {

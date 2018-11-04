@@ -116,6 +116,11 @@ public class TSPSolver {
 		
 		// Comparaison des solutions et fermeture des threads
 		m_solution = compareSolution(fut0.get(),fut1.get(),fut2.get(),fut3.get());
+		/*if (fut3.get().getObjectiveValue() == m_solution.getObjectiveValue()) {
+			System.out.println("Meilleure solution renvoyée par Sharkyyyyyy le BG");
+		} else {
+			System.out.println("Meilleure solution renvoyée par Max et Guigui les BG");
+		}*/
 		exe.shutdownNow(); // ou shutdownNow() ?????
 	}
 
