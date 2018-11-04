@@ -66,6 +66,7 @@ public class PlusProchesVoisins extends AHeuristic {
 		long startTime = System.currentTimeMillis();
 		long spentTime = 0;
 		Solution best_sol = this.Voisin(0);
+		
 		double best = this.Voisin(0).evaluate();
 		for(int i=1;i<m_instance.getNbCities();i++) {
 			Solution s = this.Voisin(i);

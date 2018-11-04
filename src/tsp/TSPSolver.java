@@ -85,10 +85,9 @@ public class TSPSolver {
 	public void solve() throws Exception {
 		
 		// Solution initiale : plus proche voisin
-		AHeuristic ini = (new PlusProchesVoisins(m_instance,"PlusProchesVoisins",m_timeLimit));
-		ini.solve();
-		Solution solutionIni = ini.getSolution();
-
+		PlusProchesVoisins ppv = new PlusProchesVoisins(m_instance, "PlusProchesVoisins1.0", this.getTimeLimit());
+		Solution solutionIni = ppv.Voisin(0);
+		
 		Callable[] solvers = new Callable[4];
 
 		// Thread 1 : algorithme génétique + 2-opt
@@ -106,6 +105,9 @@ public class TSPSolver {
 		// Thread 4 :  2-opt + algorithme SA
 		
 		/*
+		AHeuristic ini = (new PlusProchesVoisins(m_instance,"PlusProchesVoisins",m_timeLimit));
+		ini.solve();
+		Solution solutionIni2 = ini.getSolution();
 		opt_2 Opt_2 = new opt_2(m_instance);
 		Solution solOpt_2 = Opt_2.solve(solutionIni, getTimeLimit());
 		solvers[3] = new ThreadPerso(new SA(m_instance),solOpt_2, 0, getTimeLimit());
