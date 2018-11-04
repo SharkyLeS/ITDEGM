@@ -140,7 +140,7 @@ public class AntAlgorithm extends AMetaheuristic {
 	}
 	/**
 	 * La fourmie a terminé son tour. On calcule la quantité de phéromones supplémentaire
-	 * déposée sur chaque arc de passage.  
+	 * déposée sur chaque arc de passage. Fomrule (3) fournis.
 	 * @param longueur. Il s'agit de la longueur toal du cycle (ce sera
 	 * getObjectivevalue() puisque qu'on travaille directement sur des objets Solution. 
 	 * @return La quantité de phéromone supplémentaire déposée sur chaque arc de passage.
@@ -152,9 +152,12 @@ public class AntAlgorithm extends AMetaheuristic {
 	/**
 	 * Cette fonction met à jour les quantité de phéromone sur chaque arc (i,j). D'aprés
 	 * la formule fournis (2), la quantité de phéromones presente sur l'arc (i,j) dépend
-	 * de celle présente auparavant (*rho)  
-	 * @param listeSolution
-	 * @param pheromones
+	 * de celle présente auparavant (*rho)  auquelle on ajoute la somme de toutes les
+	 * pheromones déposées par un nombre m de fourmies précédentes sur ce même arc. 
+	 * (somme calculée plus loins dans le solve()). 
+	 * @param ArrayList<Solution>listeSolution de taille m.
+	 * @param double pheromones : somme des phéromones déposées sur chaque arc par 
+	 * chaque fourmies.
 	 * @throws Exception
 	 */
 	public void majPheromones(ArrayList<Solution> listeSolution, double pheromones) throws Exception { /*Ajout Max */
@@ -171,7 +174,13 @@ public class AntAlgorithm extends AMetaheuristic {
 			}
 		}
 	}
-	
+		/**
+		 * En partant d'une villeDeDepart, on obtient le chemin effectué par la fourmie.
+		 * @param int villeDeDepart, 0<=villeDeDepart<super.getInstances.getNbCities()-1.
+		 * @return un Objet Solution qui est le cycle effectué par la fourmie qui est 
+		 * partie de sa VilleDeDepart.
+		 * @throws Exception
+		 */
 		public Solution lanceFourmi(int villeDeDepart) throws Exception {
 			Solution sol = new Solution(super.getInstance());
 			// Initialisation
@@ -179,7 +188,8 @@ public class AntAlgorithm extends AMetaheuristic {
 			sol.setCityPosition(villeDeDepart, super.getInstance().getNbCities());
 			ArrayList<Integer> villesRestantes = new ArrayList<Integer>();
 			for (int i=0; i<super.getInstance().getNbCities(); i++) {
-				if (i!=villeDeDepart) villesRestantes.add(i);
+				if (i!=villeDeDepart) villesRestantes.add(i); // Construction de la liste
+															// de villes restantes. 
 			}
 			// Boucle
 			int i = villeDeDepart; 
@@ -187,11 +197,12 @@ public class AntAlgorithm extends AMetaheuristic {
 				majProba(i,villesRestantes);
 				i = choixVille(i,villesRestantes);
 				sol.setCityPosition(i, position);
-				for(int j=0;j<villesRestantes.size();j++) { //retire i de villesRestantes
+				for(int j=0;j<villesRestantes.size();j++) { 
 					if(villesRestantes.get(j)==i) {
-						villesRestantes.remove(j);
+						villesRestantes.remove(j); //On retire la ville choisie de
+													// villesRestantes
 						break;
-					} /* Obliger de recopier la fonction lance fourmi, sinon, fonctions qui s'apellent sans cesse entre elle */
+					} 
 				}		
 			}
 		return sol;
