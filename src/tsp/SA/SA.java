@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import tsp.Instance;
+import tsp.PlusProchesVoisins;
 import tsp.Solution;
+import tsp.heuristic.AHeuristic;
 import tsp.metaheuristic.AMetaheuristic;
+import tsp.opt.opt_2;
 
 public class SA extends AMetaheuristic {
 	
@@ -30,7 +33,6 @@ public class SA extends AMetaheuristic {
 
 	public SA(Instance instance) throws Exception {
 		super(instance, "Simulated Annealing");
-		// TODO Auto-generated constructor stub
 	}
 
 	public ArrayList<Double> getTemperatures() {
@@ -39,6 +41,12 @@ public class SA extends AMetaheuristic {
 
 	@Override
 	public Solution solve(Solution sol, long time) throws Exception {
+		AHeuristic ini = (new PlusProchesVoisins(m_instance,"PlusProchesVoisins",time));
+		ini.solve();
+		Solution solutionIni2 = ini.getSolution();
+		opt_2 Opt_2 = new opt_2(m_instance);
+		sol = Opt_2.solve(solutionIni2, time).copy();
+		
 		ArrayList<Solution> sols = new ArrayList<Solution>();
 		int k=0;
 		double startTime = System.currentTimeMillis();
@@ -74,6 +82,7 @@ public class SA extends AMetaheuristic {
 				if(x<=p) sol=s.copy();
 			}
 			T*=T_rate;
+			spentTime = System.currentTimeMillis() - startTime;
 		}
 		return sol;
 	}

@@ -11,9 +11,10 @@ public class Colonie extends AMetaheuristic {
 	private int Q;
 	private double[][] visibilite;
 	private double[][] pheromones; // les tau (i,j)
+	private static Instance instance;
 
 	public Colonie() throws Exception {
-		super(m_instance, "Colonie de fourmis");
+		super(instance, "Colonie de fourmis");
 	}
 	
 	public Colonie(Instance instance,double alph, double bet, double rh, int q) throws Exception {
@@ -94,6 +95,12 @@ public class Colonie extends AMetaheuristic {
 
 	public Solution solve(Solution sol) throws Exception {
 		
+		return null;
+	}
+
+	@Override
+	public Solution solve(Solution sol, long time) throws Exception {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

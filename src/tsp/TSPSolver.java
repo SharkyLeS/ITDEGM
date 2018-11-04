@@ -83,6 +83,7 @@ public class TSPSolver {
 	 * @throws Exception may return some error, in particular if some vertices index are wrong.
 	 */
 	public void solve() throws Exception {
+		long startTime = System.currentTimeMillis();
 		
 		// Solution initiale : plus proche voisin
 		PlusProchesVoisins ppv = new PlusProchesVoisins(m_instance, "PlusProchesVoisins1.0", this.getTimeLimit());
@@ -90,8 +91,8 @@ public class TSPSolver {
 		
 		Callable[] solvers = new Callable[4];
 
-		// Thread 1 : algorithme génétique + 2-opt
-		solvers[0] = new ThreadPerso(new GA(solutionIni, m_instance,100,this.getTimeLimit()),
+		// Thread 1 : algorithme de colonie de fourmis + 2-opt
+		solvers[0] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
 				solutionIni, 0 , getTimeLimit());
 		
 		// Thread 2 : algorithme de colonie de fourmis + 2-opt
@@ -101,22 +102,10 @@ public class TSPSolver {
 		// Thread 3 : algorithme de colonie de fourmis + 2-opt
 		solvers[2] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
 				solutionIni, 0 , getTimeLimit());
-
+		
 		// Thread 4 :  2-opt + algorithme SA
-		
-		/*
-		AHeuristic ini = (new PlusProchesVoisins(m_instance,"PlusProchesVoisins",m_timeLimit));
-		ini.solve();
-		Solution solutionIni2 = ini.getSolution();
-		opt_2 Opt_2 = new opt_2(m_instance);
-		Solution solOpt_2 = Opt_2.solve(solutionIni, getTimeLimit());
-		solvers[3] = new ThreadPerso(new SA(m_instance),solOpt_2, 0, getTimeLimit());
-		*/
-		
-		
-		solvers[3] = new ThreadPerso(new AntAlgorithm(m_instance,solutionIni),
-				solutionIni, 0 , getTimeLimit());
-		
+		solvers[3] = new ThreadPerso(new SA(m_instance),
+				solutionIni, 0 , getTimeLimit()-2);		
 		
 		// Déclaration et exécution des 4 threads
 		ExecutorService exe = Executors.newFixedThreadPool(4); 
@@ -127,7 +116,7 @@ public class TSPSolver {
 		
 		// Comparaison des solutions et fermeture des threads
 		m_solution = compareSolution(fut0.get(),fut1.get(),fut2.get(),fut3.get());
-		exe.shutdown(); // ou shutdownNow() ?????
+		exe.shutdownNow(); // ou shutdownNow() ?????
 	}
 
 	// -----------------------------

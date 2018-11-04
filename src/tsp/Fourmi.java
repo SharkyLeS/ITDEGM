@@ -9,8 +9,8 @@ public class Fourmi extends Colonie {
 	private ArrayList<Integer> villesRestantes;
 	
 	
-	public Fourmi(int villeDeDepart) {
-		super(m_instance); // A VOIR
+	public Fourmi(int villeDeDepart) throws Exception {
+		super(); // A VOIR
 		this.villesParcourues = new ArrayList<Integer>();
 		this.villesParcourues.add(villeDeDepart);
 		this.proba = new Double[super.getInstance().getNbCities()][super.getInstance().getNbCities()];

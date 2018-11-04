@@ -8,10 +8,10 @@ import tsp.opt.opt_2;
 public class AntAlgorithm extends AMetaheuristic {
 
 	public static final boolean trace = false;
-	public static final int m = 20; // Nombre de fourmis par cycle
-	public static final double alpha = 1.0; // pondere les phÃ©romones A DEFINIR
+	public static final int m = 100; // Nombre de fourmis par cycle
+	public static final double alpha = 2.0; // pondere les phÃ©romones A DEFINIR
 	public static final double beta = 5.0; // pondere la visibilitÃ©
-	public static final double rho = 0.7; // doit Ãªtre entre 0 et 1
+	public static final double rho = 0.5; // doit Ãªtre entre 0 et 1
 	public static final double Q = 100.0;
 
 	
@@ -70,9 +70,9 @@ public class AntAlgorithm extends AMetaheuristic {
 	}
 	
 	/**
-	 * La fourmie est à la ville i (colonne i dans la matrice) est on met les 
-	 * porbabilités qu'elle passe dans chaque villes restantes j à jour. Le calcul
-	 * des probabilités de passer de i à j se base sur les visibilité[i][j] (constantes)
+	 * La fourmie est ï¿½ la ville i (colonne i dans la matrice) est on met les 
+	 * porbabilitï¿½s qu'elle passe dans chaque villes restantes j ï¿½ jour. Le calcul
+	 * des probabilitï¿½s de passer de i ï¿½ j se base sur les visibilitï¿½[i][j] (constantes)
 	 * et pheromones[i][j]. 
 	 * @param  int i, i>=0 et i<super.getInstances().getNbCities()-1. 
 	 * @param ArrayList<Integer>villesRest (villes pas encore parcourues)
@@ -104,15 +104,15 @@ public class AntAlgorithm extends AMetaheuristic {
 		}
 	}
 	/**
-	 * La fourmie est à la ville i et choisie la ville suivante. La colonne i est une
-	 * colonne de probabilité. Prenons un exemple simple pour comprendre. S'il ne reste
-	 * que 3 villes et qu'on a 0,6 (1); 0,2(2) et 0,2(3) comme proba associées. On tire
-	 *  un double aléatoire entre 0 et 1, s'il est entre 0 et 0,6 -> (1) ; entre 0,6 et
+	 * La fourmie est ï¿½ la ville i et choisie la ville suivante. La colonne i est une
+	 * colonne de probabilitï¿½. Prenons un exemple simple pour comprendre. S'il ne reste
+	 * que 3 villes et qu'on a 0,6 (1); 0,2(2) et 0,2(3) comme proba associï¿½es. On tire
+	 *  un double alï¿½atoire entre 0 et 1, s'il est entre 0 et 0,6 -> (1) ; entre 0,6 et
 	 *  0,8 ->(2) et entre 0,8 et 1 ->(3).   
 	 * @param int i, 0<=i<super.getInstances().getNbcities()-1.
 	 * @param ArrayList<Integer>villesRest (villes pas encore parcourues)
 	 * 1<=villesRest.size()<super.getInstances().getNbCities()-1.
-	 * @return ville choisie après i.
+	 * @return ville choisie aprï¿½s i.
 	 * @throws Exception
 	 */
 	public int choixVille(int i, ArrayList<Integer> villesRest) throws Exception {
@@ -124,9 +124,9 @@ public class AntAlgorithm extends AMetaheuristic {
 				villeChoisie = j;
 				break;
 			} else if (j == villesRest.get(villesRest.size()-1)) {
-				villeChoisie = j; //La somme des probabilités peut ne pas faire 1.
-								// Si la fourmie regarde la dernière ville sans avoir
-								// encore choisie, alors elle prend la dernière ville.
+				villeChoisie = j; //La somme des probabilitï¿½s peut ne pas faire 1.
+								// Si la fourmie regarde la derniï¿½re ville sans avoir
+								// encore choisie, alors elle prend la derniï¿½re ville.
 								// ex : le dernier intervalle est [0,65;0,95] et x=0,98
 				break;
 			} else {
@@ -139,24 +139,24 @@ public class AntAlgorithm extends AMetaheuristic {
 		return villeChoisie;
 	}
 	/**
-	 * La fourmie a terminé son tour. On calcule la quantité de phéromones supplémentaire
-	 * déposée sur chaque arc de passage. Fomrule (3) fournis.
+	 * La fourmie a terminï¿½ son tour. On calcule la quantitï¿½ de phï¿½romones supplï¿½mentaire
+	 * dï¿½posï¿½e sur chaque arc de passage. Fomrule (3) fournis.
 	 * @param longueur. Il s'agit de la longueur toal du cycle (ce sera
 	 * getObjectivevalue() puisque qu'on travaille directement sur des objets Solution. 
-	 * @return La quantité de phéromone supplémentaire déposée sur chaque arc de passage.
+	 * @return La quantitï¿½ de phï¿½romone supplï¿½mentaire dï¿½posï¿½e sur chaque arc de passage.
 	 * @throws Exception
 	 */
 	public double getDeltaPheromones(double longueur) throws Exception { //Max
 		return Q/longueur;
 	}
 	/**
-	 * Cette fonction met à jour les quantité de phéromone sur chaque arc (i,j). D'aprés
-	 * la formule fournis (2), la quantité de phéromones presente sur l'arc (i,j) dépend
-	 * de celle présente auparavant (*rho)  auquelle on ajoute la somme de toutes les
-	 * pheromones déposées par un nombre m de fourmies précédentes sur ce même arc. 
-	 * (somme calculée plus loins dans le solve()). 
+	 * Cette fonction met ï¿½ jour les quantitï¿½ de phï¿½romone sur chaque arc (i,j). D'aprï¿½s
+	 * la formule fournis (2), la quantitï¿½ de phï¿½romones presente sur l'arc (i,j) dï¿½pend
+	 * de celle prï¿½sente auparavant (*rho)  auquelle on ajoute la somme de toutes les
+	 * pheromones dï¿½posï¿½es par un nombre m de fourmies prï¿½cï¿½dentes sur ce mï¿½me arc. 
+	 * (somme calculï¿½e plus loins dans le solve()). 
 	 * @param ArrayList<Solution>listeSolution de taille m.
-	 * @param double pheromones : somme des phéromones déposées sur chaque arc par 
+	 * @param double pheromones : somme des phï¿½romones dï¿½posï¿½es sur chaque arc par 
 	 * chaque fourmies.
 	 * @throws Exception
 	 */
@@ -175,9 +175,9 @@ public class AntAlgorithm extends AMetaheuristic {
 		}
 	}
 		/**
-		 * En partant d'une villeDeDepart, on obtient le chemin effectué par la fourmie.
+		 * En partant d'une villeDeDepart, on obtient le chemin effectuï¿½ par la fourmie.
 		 * @param int villeDeDepart, 0<=villeDeDepart<super.getInstances.getNbCities()-1.
-		 * @return un Objet Solution qui est le cycle effectué par la fourmie qui est 
+		 * @return un Objet Solution qui est le cycle effectuï¿½ par la fourmie qui est 
 		 * partie de sa VilleDeDepart.
 		 * @throws Exception
 		 */
