@@ -1,5 +1,4 @@
 package tsp.AntColony;
-
 import java.util.ArrayList;
 import tsp.Instance;
 import tsp.Solution;
@@ -70,11 +69,19 @@ public class AntAlgorithm extends AMetaheuristic {
 		this.pheromones[i][j] = valeur;
 	}
 	
-
-	//Met √† jour this.proba autour de i ; tourne avant de choisir une ville
+	/**
+	 * La fourmie est ‡ la ville i (colonne i dans la matrice) est on met les 
+	 * porbabilitÈs qu'elle passe dans chaque villes restantes j ‡ jour. Le calcul
+	 * des probabilitÈs de passer de i ‡ j se base sur les visibilitÈ[i][j] (constantes)
+	 * et pheromones[i][j]. 
+	 * @param  int i, i>=0 et i<super.getInstances().getNbCities()-1. 
+	 * @param ArrayList<Integer>villesRest (villes pas encore parcourues)
+	 * 1<=villesRest.size()<super.getInstances().getNbCities()-1. 
+	 */
 	public void majProba(int i, ArrayList<Integer> villesRest) {
 		double acc = 0.0;
-		for (int j : villesRest) { // d'abord le num√©rateur
+		for (int j : villesRest) { // Dans la formule fournis (1), on calcul d'abord le
+								//  numerateur pour chaque proba(i,j). 
 			double termeAlpha = Math.pow(getPheromones(i, j), alpha);
 			double termeBeta = Math.pow(getVisibilite(i,j),beta);
 			
@@ -90,22 +97,37 @@ public class AntAlgorithm extends AMetaheuristic {
 			
 			acc += this.getProba(i, j);
 		}
-		for (int j : villesRest) { //on divise par le d√©nominateur, commun √† toutes les probas
+		for (int j : villesRest) { // On divise par la somme des termeAlpha*termBeta
+								// de toutes les villes restantes. 
 			this.setProba(getProba(i,j)/acc, i, j);
 			if (trace) System.out.println("voici finalement la proba[i][j] : "+this.proba[i][j]);
 		}
 	}
-
+	/**
+	 * La fourmie est ‡ la ville i et choisie la ville suivante. La colonne i est une
+	 * colonne de probabilitÈ. Prenons un exemple simple pour comprendre. S'il ne reste
+	 * que 3 villes et qu'on a 0,6 (1); 0,2(2) et 0,2(3) comme proba associÈes. On tire
+	 *  un double alÈatoire entre 0 et 1, s'il est entre 0 et 0,6 -> (1) ; entre 0,6 et
+	 *  0,8 ->(2) et entre 0,8 et 1 ->(3).   
+	 * @param int i, 0<=i<super.getInstances().getNbcities()-1.
+	 * @param ArrayList<Integer>villesRest (villes pas encore parcourues)
+	 * 1<=villesRest.size()<super.getInstances().getNbCities()-1.
+	 * @return ville choisie aprËs i.
+	 * @throws Exception
+	 */
 	public int choixVille(int i, ArrayList<Integer> villesRest) throws Exception {
 		double x = Math.random();
 		double acc = 0.0;
 		int villeChoisie = -1;
-		for (int j : villesRest) { // am√©lioration : retirer ici villeChoisie de villesRest
+		for (int j : villesRest) {
 			if (x<acc+ this.proba[i][j]) {
 				villeChoisie = j;
 				break;
 			} else if (j == villesRest.get(villesRest.size()-1)) {
-				villeChoisie = j;
+				villeChoisie = j; //La somme des probabilitÈs peut ne pas faire 1.
+								// Si la fourmie regarde la derniËre ville sans avoir
+								// encore choisie, alors elle prend la derniËre ville.
+								// ex : le dernier intervalle est [0,65;0,95] et x=0,98
 				break;
 			} else {
 				if (trace) System.out.println("avant, acc = " +acc+ " ; this.proba[i][j] = " + this.proba[i][j]);
@@ -116,11 +138,25 @@ public class AntAlgorithm extends AMetaheuristic {
 		if (trace) System.out.println("la ville choisie est " + villeChoisie);
 		return villeChoisie;
 	}
-	
+	/**
+	 * La fourmie a terminÈ son tour. On calcule la quantitÈ de phÈromones supplÈmentaire
+	 * dÈposÈe sur chaque arc de passage.  
+	 * @param longueur. Il s'agit de la longueur toal du cycle (ce sera
+	 * getObjectivevalue() puisque qu'on travaille directement sur des objets Solution. 
+	 * @return La quantitÈ de phÈromone supplÈmentaire dÈposÈe sur chaque arc de passage.
+	 * @throws Exception
+	 */
 	public double getDeltaPheromones(double longueur) throws Exception { //Max
 		return Q/longueur;
 	}
-	
+	/**
+	 * Cette fonction met ‡ jour les quantitÈ de phÈromone sur chaque arc (i,j). D'aprÈs
+	 * la formule fournis (2), la quantitÈ de phÈromones presente sur l'arc (i,j) dÈpend
+	 * de celle prÈsente auparavant (*rho)  
+	 * @param listeSolution
+	 * @param pheromones
+	 * @throws Exception
+	 */
 	public void majPheromones(ArrayList<Solution> listeSolution, double pheromones) throws Exception { /*Ajout Max */
 		for (int i=0;i<super.getInstance().getNbCities()-1;i++) {
 			for (int j=i+1;j<super.getInstance().getNbCities()-1;j++) {
