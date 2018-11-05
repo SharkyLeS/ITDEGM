@@ -14,12 +14,24 @@ public class AntAlgorithm extends AMetaheuristic {
 	public static final double rho = 0.5; // doit être entre 0 et 1
 	public static final double Q = 100.0;
 
-	
+	// -----------------------------
+	// ----- ATTRIBUTS -------------
+	// -----------------------------
 	private Solution bestSol;
 	private double[][] proba;
 	private double[][] visibilite; // à voir si on garde
-	private double[][] pheromones; // les tau (i,j)	
+	private double[][] pheromones; // les tau (i,j)
 	
+	// -----------------------------
+	// ----- CONSTRUCTOR -----------
+	// -----------------------------
+	/**
+	 * 
+	 * @param instance, instance du probleme
+	 * @param sol, une solution initiale qui va permettre de lancer la comparaison, 
+	 * avec les solutions obtenues apres, dans le solve
+	 * @throws Exception
+	 */
 	public AntAlgorithm(Instance instance, Solution sol) throws Exception {
 		super(instance, "Colonie de fourmis");
 		this.bestSol = sol.copy();
@@ -43,28 +55,65 @@ public class AntAlgorithm extends AMetaheuristic {
 	}
 	
 	// GETTERS AND SETTERS
+	/** @return Une solution initiale dont doit heriter l'objet */
 	public Solution getBestSol() {
 		return this.bestSol;
 	}
+	/**
+	 * Remplace la solution initiale par sol 
+	 * @param sol
+	 */
 	public void setBestSol(Solution sol) {
 		this.bestSol = sol;
 	}
+	/**
+	 * @param int i, 0<=i<=super.getInstances().getNbCities();
+	 * @param int j, 0<=j<=super.getInstances().getNbCities();
+	 * @return la probabilite de passer de la ville a la ville j
+	 */
 	public double getProba(int i,int j) {
 		return this.proba[i][j];
 	}
+	/**
+	 * Remplace la probabilite de passer de i a j par valeur
+	 * @param  double valeur, valeur qui correspond a une probabilite
+	 * @param int i, 0<=i<=super.getInstances().getNbCities();
+	 * @param int j, 0<=j<=super.getInstances().getNbCities();
+	 */
 	public void setProba(double valeur,int i, int j) {
 		this.proba[i][j] = valeur;
 	}
+	/**
+	 * @param int i, 0<=i<=super.getInstances().getNbCities();
+	 * @param int j, 0<=j<=super.getInstances().getNbCities();
+	 * @return l'attraction de la ville j sur la ville i (visibilite)
+	 */
 	public double getVisibilite(int i,int j) {
 		return visibilite[i][j];
 	}
-	
+	/**
+	 * Remplace l'attraction de la ville j sur  la ville i 
+	 * @param  double valeur, valeur qui correspond a une attraction
+	 * @param int i, 0<=i<=super.getInstances().getNbCities();
+	 * @param int j, 0<=j<=super.getInstances().getNbCities();
+	 */
 	public void setVisibilite(double valeur,int i, int j) {
 		this.visibilite[i][j] = valeur;
 	}
+	/**
+	 * @param int i, 0<=i<=super.getInstances().getNbCities();
+	 * @param int j, 0<=j<=super.getInstances().getNbCities();
+	 * @return la quantite de pheromone present sur l'arc (i,j) (passage de i a j)
+	 */
 	public double getPheromones(int i,int j) {
 		return pheromones[i][j];
 	}
+	/**
+	 * Remplace la quantite de pheromone sur (i,j) par valeur
+	 * @param double valeur, valeur qui correspond a une quantite de pheromones
+	 * @param int i , 0<=i<=super.getInstances().getNbCities();
+	 * @param int j, 0<=j<=super.getInstances().getNbCities();
+	 */
 	public void setPheromones(double valeur, int i, int j) {
 		this.pheromones[i][j] = valeur;
 	}
@@ -152,7 +201,7 @@ public class AntAlgorithm extends AMetaheuristic {
 	/**
 	 * Cette fonction met ici � jour les quantite de pheromone sur chaque arc (i,j). D'apr�s
 	 * la formule fournis (2), la quantite de pheromones presente sur l'arc (i,j) depend
-	 * de celle presente auparavant (*rho)  auquelle on ajoute la somme de toutes les
+	 * de celle presente auparavant (*rho->evaporation) auquelle on ajoute la somme de toutes les
 	 * pheromones deposes par un nombre m de fourmies precedentes sur ce meme arc. 
 	 * (somme calculee plus loins dans le solve()). 
 	 * @param ArrayList<Solution>listeSolution de taille m.
