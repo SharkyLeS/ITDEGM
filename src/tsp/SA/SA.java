@@ -68,6 +68,22 @@ public class SA extends AMetaheuristic {
 		return best_sol;
 	}
 
+	/**
+	 * Fonction codant le système de décision des solutions : 
+	 * On génère une solution par swap à partir de sol, si elle est de coût inférieur à sol, on l'accepte
+	 * sans condition, sinon, on l'accepte avec la probabilité exp(-différenceDeCout/T)
+	 * Puis on fait décroître la température.
+	 * On tente d'améliorer tant que la température est supérieure à la température limite et que le 
+	 * temps limite n'a pas été dépassé
+	 * On retourne la solution obtenue
+	 * @param sol
+	 * @param T0
+	 * @param T_rate
+	 * @param T_lim
+	 * @param max_time
+	 * @return
+	 * @throws Exception
+	 */
 	public Solution cooling(Solution sol, double T0, double T_rate, double T_lim, long max_time) throws Exception {
 		double T=T0;
 		double startTime = System.currentTimeMillis();
@@ -87,6 +103,13 @@ public class SA extends AMetaheuristic {
 		return sol;
 	}
 	
+	/**
+	 * Code un swap entre deux villes de la solution s choisies au hasard
+	 * renvoie la solution obtenue
+	 * @param s
+	 * @return
+	 * @throws Exception
+	 */
 	public Solution swap(Solution s) throws Exception {
 		int a = 1+(int)(Math.random()*(s.getInstance().getNbCities()-2));
 		int b = a+1+(int)(Math.random()*(s.getInstance().getNbCities()-1-a));
@@ -96,9 +119,19 @@ public class SA extends AMetaheuristic {
 		return sol;
 	}
 	
-	/*
-	 * List-Based implementation du Recuit Simuler pour tenter de s'affranchir du 
+	
+	/**
+	 * List-Based implementation du Recuit Simulé pour tenter de s'affranchir du 
 	 * choix des paramètres, très dur et très changeant selon les instances.
+	 * Le corps de la fonction repose sur le même principe que cooling()
+	 * retourne la solution obtenue.
+	 * @param x
+	 * @param T0
+	 * @param T_rate
+	 * @param T_lim
+	 * @param max_time
+	 * @return
+	 * @throws Exception
 	 */
 	public Solution LBCooling(Solution x, double T0, double T_rate, double T_lim, double max_time) throws Exception {
 		int k=0;
@@ -136,6 +169,11 @@ public class SA extends AMetaheuristic {
 		return x;
 	}
 	
+	/**
+	 * Crée une première liste de températures pour les algos de cooling
+	 * @param x
+	 * @throws Exception
+	 */
 	public void InitialiseTemperatures(Solution x) throws Exception {
 		ArrayList<Double> L = new ArrayList<Double>();
 		while(L.size()<nb_Temperatures) {
@@ -152,6 +190,14 @@ public class SA extends AMetaheuristic {
 		temperatures=L;
 	}
 	
+	/**
+	 * Opérateur faisant la comparaison entre les solutions obtenues par les fonctions swap, insere et 
+	 * inverse.
+	 * rettourne la meilleure des 3 solutions
+	 * @param s
+	 * @return
+	 * @throws Exception
+	 */
 	public Solution HybridGreedyOperator(Solution s) throws Exception {
 		int i = 1+(int)(Math.random()*(s.getInstance().getNbCities()-2));
 		int j = i+1+(int)(Math.random()*(s.getInstance().getNbCities()-1-i));
@@ -176,6 +222,15 @@ public class SA extends AMetaheuristic {
 		}
 	}
 	
+	/**
+	 * Code un swap entre deux villes i et j dans la solution s
+	 * retourne la nouvelle solution obtenue
+	 * @param s
+	 * @param i
+	 * @param j
+	 * @return
+	 * @throws Exception
+	 */
 	public Solution swap(Solution s, int i, int j) throws Exception {
 		int n = s.getInstance().getNbCities();
 		if((0>=i)||(0>=j)||(i>=n)||(j>=n)||(i==j)) {
@@ -189,8 +244,15 @@ public class SA extends AMetaheuristic {
 		}
 	}
 	
-	/*
-	 * Place la ville de position j en position i
+
+	/**
+	 * Place la ville de position j en position i et déplace conséquemment les autres villes.
+	 * retourne la solution obtenue
+	 * @param s
+	 * @param i
+	 * @param j
+	 * @return
+	 * @throws Exception
 	 */
 	public Solution insert(Solution s, int i, int j) throws Exception {
 		int n = s.getInstance().getNbCities();
@@ -215,6 +277,15 @@ public class SA extends AMetaheuristic {
 		}
 	}
 	
+	/**
+	 * Inverse le chemin entre les villes i et j dans la solution s 
+	 * retourne la solution obtenue
+	 * @param s
+	 * @param i
+	 * @param j
+	 * @return
+	 * @throws Exception
+	 */
 	public Solution inverse(Solution s, int i, int j) throws Exception {
 		int n = s.getInstance().getNbCities();
 		if((0>=i)||(0>=j)||(i>=n)||(j>=n)||(i==j)) {

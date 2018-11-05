@@ -80,19 +80,22 @@ public class GA extends AMetaheuristic{
 		this.fitness = fitness;
 	}
 	
-	/*
+
+	/**
 	 * Représente la valeur de l'incrément de lambda à chaque itération 
-	 * Permet à lambda de croître graduellement de 0 à 1
-	 * 
-	 * Valeur à choisir précisemment (y reréflechir)
+	 * Permet à lambda de croître graduellement de 0 à 1.
+	 * @return
 	 */
 	public double getTaux_Lambda() {
 		//return 1/(this.getTaille_Monde()*Max_Selection_Pressure);
 		return 1/this.getTaille_Monde(); // Valeur pour tests
 	}
 	
-	/*
+	/**
 	 * retourne la probabilité de reproduction de la solution s dans les générations futures
+	 * @param s
+	 * @return
+	 * @throws Exception
 	 */
 	public double getProba(Solution s) throws Exception {
 		double sum = 0;
@@ -102,11 +105,14 @@ public class GA extends AMetaheuristic{
 		return (1/s.evaluate())/sum;
 	}
 	
-	/*
-	 *  Choisis 2 parents au sein du monde en fonction de leurs coûts (ceux de coût élevé ont moins de chance d'être choisis comme parents)
+	
+	/**
+	 * Choisis 2 parents au sein du monde en fonction de leurs coûts (ceux de coût élevé ont moins de chance d'être choisis comme parents)
 	 *  D'autres implémentations sont envisageables pour comparer les performances
 	 *  
-	 *  Algorithme coûteux à cause de precision_Proba très grande 
+	 *  Algorithme coûteux à cause de precision_Proba très grande
+	 * @return
+	 * @throws Exception
 	 */
 	public ArrayList<Solution> choisir_Parents() throws Exception {
 		ArrayList<Solution> parents = new ArrayList<Solution>();
@@ -125,10 +131,13 @@ public class GA extends AMetaheuristic{
 		return parents;
 	}
 	
-	/*
+	
+	/**
 	 * Autre implémentation de choix des parents dans une population.
 	 * On implémente ici la sélection par "tournoi" : on choisit à chaque fois deux
 	 * membres au hasard que l'on compare en choisissant celui de coût moindre.
+	 * @return
+	 * @throws Exception
 	 */
 	public ArrayList<Solution> choisirParentsTournoi() throws Exception{
 		ArrayList<Solution> parents = new ArrayList<Solution>();
@@ -144,8 +153,11 @@ public class GA extends AMetaheuristic{
 	}
 	
 	
-	/*
+	/**
 	 * Tire aléatoirement deux villes de la solution et les échange.
+	 * @param s
+	 * @return
+	 * @throws Exception
 	 */
 	public Solution mutation(Solution s) throws Exception {
 		// Attention tout de même à ne pas changer la ville de départ/arrivée
@@ -159,10 +171,14 @@ public class GA extends AMetaheuristic{
 		return sol;
 	}
 	
-	/*
+	
+	/**
 	 * Méthode de Crossover permettant de tester de nouvelles combinaisons (en combiant cette méthode avec les mutations)
 	 * Renvoie des fils issus de parents, générés par le crossover MPX
 	 * On implémente ici le MPX : Maximal Preservative Crossover
+	 * @param parents
+	 * @return
+	 * @throws Exception
 	 */
 	public ArrayList<Solution> MPX(ArrayList<Solution> parents) throws Exception {
 		int coupure = 0;
@@ -224,10 +240,14 @@ public class GA extends AMetaheuristic{
 		return offsprings;
 	}
 	
-	/*
+	
+	/**
 	 * Méthode de Crossover permettant de tester de nouvelles combinaisons (en combiant cette méthode avec les mutations)
 	 * Renvoie des fils issus de parents, générés par le crossover AEX
 	 * On implémente ici le AEX : Alternating Edges Crossover
+	 * @param parents
+	 * @return
+	 * @throws Exception
 	 */
 	public ArrayList<Solution> AEX(ArrayList<Solution> parents) throws Exception{
 		// Transformation des deux parents en LSDEBDoublementChaineeTab
@@ -284,8 +304,14 @@ public class GA extends AMetaheuristic{
 		else return successeur;
 	}
 	
-	/*
+	
+	/**
 	 * Retourne true si le fils o a un coût inférieur ou égal à ses parents, false sinon
+	 * @param o
+	 * @param parents
+	 * @param lambda
+	 * @return
+	 * @throws Exception
 	 */
 	public boolean isElligible(Solution o, ArrayList<Solution> parents, double lambda) throws Exception {
 		double objective_fitness = 0;
@@ -297,9 +323,13 @@ public class GA extends AMetaheuristic{
 		return o.evaluate()<=objective_fitness;
 	}
 	
-	/*
+	
+	/**
 	 * On code ici tout le processus de séléction de la génération suivante, en faisant appel aux autres méthodes de la classe
 	 * Retourne une nouvelle génération
+	 * @param lambda
+	 * @return
+	 * @throws Exception
 	 */
 	public ArrayList<Solution> offspring_Selection(double lambda) throws Exception{
 		int i=0;
@@ -373,7 +403,12 @@ public class GA extends AMetaheuristic{
 		return timeLimit;
 	}
 	
-	// Choisis la solution de moindre coût dans le monde
+	
+	/**
+	 * Choisis la solution de moindre coût dans le monde
+	 * @return
+	 * @throws Exception
+	 */
 	public Solution trouveOptimum() throws Exception {
 		Solution opti=this.getMonde_solutions().get(0);
 		double best_sol = this.getMonde_solutions().get(0).evaluate();

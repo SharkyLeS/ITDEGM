@@ -162,9 +162,9 @@ public class AntAlgorithm extends AMetaheuristic {
 				villeChoisie = j;
 				break;
 			} else if (j == villesRest.get(villesRest.size()-1)) {
-				villeChoisie = j; //La somme des probabilit�s peut ne pas faire 1.
-								// Si la fourmie regarde la derni�re ville sans avoir
-								// encore choisie, alors elle prend la derni�re ville.
+				villeChoisie = j; //La somme des probabilites peut ne pas faire 1.
+								// Si la fourmie regarde la derniere ville sans avoir
+								// encore choisie, alors elle prend la derniere ville.
 								// ex : le dernier intervalle est [0,65;0,95] et x=0,98
 				break;
 			} else {

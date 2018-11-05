@@ -60,9 +60,14 @@ public class opt_2 extends AHeuristic {
 		return sol;
 	}
 
-	/*
+	/**
 	 * inverse dans la solution s le chemin entre les points debut et fin
 	 * renvoie cette solution
+	 * @param s
+	 * @param debut
+	 * @param fin
+	 * @return
+	 * @throws Exception
 	 */
 	public Solution inverseRoute(Solution s, int debut, int fin) throws Exception{
 		if(fin<=debut) {
@@ -80,10 +85,15 @@ public class opt_2 extends AHeuristic {
 		}
 	}
 	
-	/*
+	
+	/**
 	 * Trouve si une amélioration est possible autour du sommet j
 	 * si oui, la fait et retourne true 
 	 * sinon, retourne false
+	 * @param sol
+	 * @param i
+	 * @return
+	 * @throws Exception
 	 */
 	public Solution BestForI(Solution sol, int i) throws Exception {
 		if((i<1)||(i>sol.getInstance().getNbCities()-2)) {
