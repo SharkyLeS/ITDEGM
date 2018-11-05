@@ -115,13 +115,14 @@ public class TSPSolver {
 		Future<Solution> fut3 = exe.submit(solvers[3]);
 		
 		// Comparaison des solutions et fermeture des threads
-		m_solution = compareSolution(fut0.get(),fut1.get(),fut2.get(),fut3.get());
+		m_solution = translation(compareSolution(fut0.get(),fut1.get(),fut2.get(),fut3.get()));
+		exe.shutdownNow();
+		
 		/*if (fut3.get().getObjectiveValue() == m_solution.getObjectiveValue()) {
-			System.out.println("Meilleure solution renvoyée par Sharkyyyyyy le BG");
-		} else {
-			System.out.println("Meilleure solution renvoyée par Max et Guigui les BG");
-		}*/
-		exe.shutdownNow(); // ou shutdownNow() ?????
+		System.out.println("Meilleure solution renvoyée par Sharkyyyyyy le BG");
+	} else {
+		System.out.println("Meilleure solution renvoyée par Max et Guigui les BG");
+	}*/
 	}
 
 	// -----------------------------
@@ -202,5 +203,27 @@ public class TSPSolver {
 	 */
 	public Solution compareSolution(Solution s1, Solution s2, Solution s3,Solution s4) throws Exception {
 		return compareSolution(compareSolution(s1,s2),compareSolution(s3,s4));
-	}	
+	}
+	
+	/** Translate la solution s pour que la ville initiale soit 0
+	 * @param s une solution
+	 * @return la solution translatee
+	 * @throws Exception
+	 */
+	public Solution translation(Solution s) throws Exception {
+		Solution solFinale = new Solution(this.m_instance);
+		
+		int i = 0;
+		while (s.getCity(i)!=0) {
+			i++;
+		}
+		solFinale.setCityPosition(0, 0);
+		solFinale.setCityPosition(0, m_instance.getNbCities());
+		for (int j= 1; j<m_instance.getNbCities(); j++) {
+			solFinale.setCityPosition(s.getCity((i+j)%(m_instance.getNbCities())),j);
+		}
+		solFinale.evaluate();
+		return solFinale;
+	}
+	
 }
